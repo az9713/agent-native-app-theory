@@ -1,6 +1,6 @@
 # A Formal Theory of State in Agent-Native Applications
 
-**Read it live:** https://az9713.github.io/agent-native-app-theory/agent_native_state_theory_v2.html
+**Read it live:** [az9713.github.io/agent-native-app-theory/agent_native_state_theory_v2.html](https://az9713.github.io/agent-native-app-theory/agent_native_state_theory_v2.html)
 
 A formal model of state in an application where humans and AI agents change the same underlying state. It extends the simple equation S<sub>t+1</sub> = F(S<sub>t</sub>, a<sub>t</sub>) to a partially observable, multi-actor transition system with typed state, provenance, permissions, and constrained transitions. The worked setting is an AI R&D operating system.
 
