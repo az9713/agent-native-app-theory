@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="A working formalization for an AI R&amp;D OS" />
+  <title>A Formal Theory of State in Agent-Native Applications</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+
+<style>
+:root { color-scheme: light dark; --bg: #f7f8fa; --paper: #fff; --ink: #182235; --muted: #596a80; --line: #dde5ef; --accent: #2554a1; --wash: #edf4ff; }
+@media (prefers-color-scheme: dark) { :root { --bg: #10151e; --paper: #19212d; --ink: #e7edf6; --muted: #b0bed0; --line: #344358; --accent: #92b9ff; --wash: #202f44; } }
+html { background: var(--bg); color: var(--ink); scroll-behavior: smooth; }
+body { box-sizing: border-box; margin: 34px auto 90px; max-width: 940px; padding: 55px clamp(20px, 6vw, 82px) 75px; background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 12px 48px rgba(14,29,50,.07); font: 17px/1.68 system-ui,-apple-system,'Segoe UI',sans-serif; hyphens: none; }
+header { border-bottom: 2px solid var(--line); padding-bottom: 24px; margin-bottom: 30px; }
+h1.title { font-size: clamp(2rem,4vw,3.2rem); letter-spacing: -.038em; line-height: 1.13; margin: 0 0 17px; color: var(--ink); }
+p.subtitle { font-size: 1.14rem; line-height: 1.5; color: var(--muted); margin: 0 0 14px; }
+p.author, p.date { font-size: .85rem; color: var(--muted); margin: 3px 0; }
+h2 { font-size: 1.48rem; letter-spacing: -.02em; line-height: 1.28; border-top: 1px solid var(--line); padding-top: 28px; margin-top: 50px; scroll-margin-top: 22px; }
+h3 { color: var(--ink); margin-top: 2.1rem; }
+a, a:visited { color: var(--accent); text-decoration-color: currentColor; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+#TOC { background: var(--wash); border: 1px solid var(--line); border-radius: 10px; padding: 14px 24px; margin: 22px 0 42px; }
+#TOC:before { content: 'CONTENTS'; display: block; font-size: .72rem; letter-spacing: .11em; color: var(--muted); font-weight: 700; }
+#TOC ul { columns: 2; column-gap: 28px; list-style: none; padding-left: 0; margin: 9px 0 0; font-size: .89rem; line-height: 1.6; }
+#TOC li { break-inside: avoid; margin-bottom: 4px; }
+#TOC a { text-decoration: none; }
+#TOC a:hover { text-decoration: underline; }
+math[display="block"] { display: block; overflow-x: auto; overflow-y: hidden; margin: 21px 0 26px; padding: 15px 12px; background: var(--wash); border-radius: 8px; color: var(--ink); }
+math[display="inline"] { color: var(--ink); }
+table { display: table; width: 100%; border-collapse: collapse; margin: 22px 0 30px; font-size: .94rem; }
+th { background: var(--wash); text-align: left; }
+th,td { border: 1px solid var(--line); padding: 10px 13px; vertical-align: top; }
+blockquote { border-left: 4px solid var(--accent); background: var(--wash); padding: 8px 18px; margin: 23px 0; color: var(--ink); border-radius: 0 8px 8px 0; }
+pre { background: var(--wash); border: 1px solid var(--line); border-radius: 8px; padding: 16px 20px; overflow-x: auto; }
+code { color: var(--ink); }
+@media (max-width: 680px) { body { margin: 0; padding: 27px 18px 55px; border: none; border-radius: 0; font-size: 16px; } #TOC ul { columns: 1; } math[display="block"] { font-size: .88em; } }
+@media print { html { background: white; } body { max-width: none; padding: 0; border: none; box-shadow: none; color: black; font-size: 11pt; } #TOC { break-after: page; } h2 { break-after: avoid; } math[display="block"] { background: #f7f7f7; } }
+</style>
+<style id="rv-style">
+aside.rv { border: 1px dashed var(--accent); border-left: 5px solid var(--accent); background: var(--wash); border-radius: 8px; padding: 12px 18px 6px; margin: 20px 0 30px; font-size: .9rem; line-height: 1.55; break-inside: avoid; }
+aside.rv .rv-h { font-size: .72rem; letter-spacing: .1em; font-weight: 700; color: var(--muted); text-transform: uppercase; margin: 0 0 8px; }
+aside.rv .it { margin: 0 0 12px; }
+aside.rv .it > b { color: var(--accent); margin-right: 6px; }
+aside.rv table { font-size: .85rem; margin: 10px 0 12px; }
+aside.rv ol, aside.rv ul { margin: 6px 0 10px; }
+aside.rv p { margin: 6px 0; }
+.tag { display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 0 7px; border-radius: 10px; margin-right: 6px; border: 1px solid var(--line); color: var(--muted); }
+.tag.w { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.tag.f { border-color: var(--accent); color: var(--accent); }
+</style>
+<style id="rec-style">
+aside.rv .rec { margin: -4px 0 14px 26px; padding: 6px 12px; border-left: 3px solid var(--accent); background: var(--paper); border-radius: 0 6px 6px 0; }
+aside.rv .rec > b { color: var(--accent); margin-right: 6px; }
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">A Formal Theory of State in Agent-Native
+Applications</h1>
+<p class="subtitle">From a shared application state to partially
+observable, multi-actor transition systems</p>
+<p class="author">A working formalization for an AI R&amp;D OS</p>
+<p class="date">September 2026</p>
+</header>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · How to read this copy</p>
+<p>This copy keeps the original document byte for byte. Boxes like this one are review notes that I added. Each item has an ID (R1, R2, …). Reply with an ID to discuss one item. Labels: <span class="tag s">Strength</span> keep it; <span class="tag w">Weakness</span> a defect in the theory as written; <span class="tag f">Suggestion</span> a specific change.</p>
+<p><b>Verdict.</b> The document is a good design checklist and a weak formal theory. The six-part state decomposition, the E<sup>real</sup> against Ê split, the version-bound approval rule, and the caveats in §3, §11, §15, §16, and the last subsection are correct and useful. As a formal object it has 4 structural defects: S<sub>t</sub> has two meanings, 3 action models conflict, the time index t is never defined, and 12 symbols carry two or more meanings. It states no result that follows from its definitions. Nothing in 𝔄 (§17) separates an agent-native application from any multi-user application with a bot.</p>
+<p><b>Top 5 fixes, in priority order:</b></p>
+<ol>
+<li>Separate S<sup>world</sup> from S<sup>owned</sup> — <a href="#R5">R5</a>.</li>
+<li>Use one action model with t = event-log position — <a href="#R41">R41</a>, <a href="#R2">R2</a>.</li>
+<li>Add a notation table and remove the 12 collisions — <a href="#R8">R8</a>.</li>
+<li>State 3 propositions that follow from the definitions — <a href="#R90">R90</a>.</li>
+<li>Define what makes an application agent-native — <a href="#R88">R88</a>.</li>
+</ol>
+<p>The full ranked list and one proposed worked example are in the last note, after the final section.</p>
+</aside>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#state-space" id="toc-state-space">1. State space</a></li>
+<li><a href="#domain-state-x_t" id="toc-domain-state-x_t">2. Domain
+state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math></a></li>
+<li><a href="#knowledge-state-k_t" id="toc-knowledge-state-k_t">3.
+Knowledge state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>t</mi></msub><annotation encoding="application/x-tex">K_t</annotation></semantics></math></a></li>
+<li><a href="#workflow-state-w_t" id="toc-workflow-state-w_t">4.
+Workflow state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mi>t</mi></msub><annotation encoding="application/x-tex">W_t</annotation></semantics></math></a></li>
+<li><a href="#agent-runtime-state-r_t"
+id="toc-agent-runtime-state-r_t">5. Agent runtime state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>t</mi></msub><annotation encoding="application/x-tex">R_t</annotation></semantics></math></a></li>
+<li><a href="#policy-state-p_t" id="toc-policy-state-p_t">6. Policy
+state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mi>t</mi></msub><annotation encoding="application/x-tex">P_t</annotation></semantics></math></a></li>
+<li><a href="#external-state-e_t" id="toc-external-state-e_t">7.
+External state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>t</mi></msub><annotation encoding="application/x-tex">E_t</annotation></semantics></math></a></li>
+<li><a href="#actors" id="toc-actors">8. Actors</a></li>
+<li><a href="#stochastic-transitions" id="toc-stochastic-transitions">9.
+Stochastic transitions</a></li>
+<li><a href="#partial-observability" id="toc-partial-observability">10.
+Partial observability</a></li>
+<li><a href="#events-as-an-implementation-primitive"
+id="toc-events-as-an-implementation-primitive">11. Events as an
+implementation primitive</a></li>
+<li><a href="#state-invariants" id="toc-state-invariants">12. State
+invariants</a></li>
+<li><a href="#goals-and-utility" id="toc-goals-and-utility">13. Goals
+and utility</a></li>
+<li><a href="#human-authority" id="toc-human-authority">14. Human
+authority</a></li>
+<li><a href="#concurrency" id="toc-concurrency">15. Concurrency</a></li>
+<li><a href="#causality-and-provenance"
+id="toc-causality-and-provenance">16. Causality and provenance</a></li>
+<li><a href="#the-full-formal-object"
+id="toc-the-full-formal-object">17. The full formal object</a></li>
+<li><a href="#compact-form-for-an-ai-rd-os"
+id="toc-compact-form-for-an-ai-rd-os">18. Compact form for an AI R&amp;D
+OS</a></li>
+</ul>
+</nav>
+<p>The starting point is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><msub><mi>a</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>a</mi><mi>t</mi></msub><mo>∈</mo><msub><mi>𝒜</mi><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi></mrow></msub><mo>∪</mo><msub><mi>𝒜</mi><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">S_{t+1}=F(S_t,a_t), \qquad a_t\in\mathcal A_{\mathrm{human}}\cup\mathcal A_{\mathrm{agent}}.</annotation></semantics></math></p>
+<p>A human and an agent can change the same underlying application
+state. A rigorous account extends this equation to a <strong>partially
+observable, multi-actor controlled dynamical system</strong> with typed
+state, provenance, permissions, and constrained transitions. The simple
+deterministic equation is a special case.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §0 · The starting equation</p>
+<div class="it" id="R1"><b>R1</b><span class="tag s">Strength</span>Starting from S<sub>t+1</sub> = F(S<sub>t</sub>, a<sub>t</sub>) and later showing it as a special case (§9, point mass) is a good structure. The reader sees what each extension adds.</div>
+<div class="it" id="R2"><b>R2</b><span class="tag w">Weakness</span>The index t is never defined. It can mean wall-clock ticks, request count, or position in the event log. Human and agent actions arrive asynchronously, so one global discrete step is an assumption. §15 depends on the answer: serialization only makes sense if t counts committed actions.</div>
+<div class="rec" id="R2-rec"><b>R2 fix</b><span class="tag f">Recommendation</span>Add to §0, after the first equation: “Time t ∈ ℕ counts committed events. Step t is the t-th entry in the event log. Wall-clock time is an attribute of each event, not the index.” Then T in §9 is a kernel per committed event, and the serialization in §15 is the log order.</div>
+<div class="it" id="R3"><b>R3</b><span class="tag w">Weakness</span>a<sub>t</sub> ∈ 𝒜<sub>human</sub> ∪ 𝒜<sub>agent</sub> loses the actor when the two sets overlap. “Edit document” is in both sets, so this equation cannot say who edited. §18 repairs this with i<sub>t</sub>. State the repair here.</div>
+<div class="rec" id="R3-rec"><b>R3 fix</b><span class="tag f">Recommendation</span>Replace the §0 equation with S<sub>t+1</sub> = F(S<sub>t</sub>, i<sub>t</sub>, a<sub>t</sub>), a<sub>t</sub> ∈ 𝒜<sub>i<sub>t</sub></sub>(S<sub>t</sub>), i<sub>t</sub> ∈ ℐ. Keep 𝒜<sub>human</sub> and 𝒜<sub>agent</sub> only as names for the union over each actor group. Every event already has an actor field (§11), so this change costs nothing in the implementation.</div>
+</aside>
+<h2 id="state-space">1. State space</h2>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mo>∈</mo><mi>𝒮</mi></mrow><annotation encoding="application/x-tex">S_t\in\mathcal S</annotation></semantics></math>
+be the complete state of the modeled system. Begin with a product
+decomposition:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒮</mi><mo>=</mo><mi>𝒳</mi><mo>×</mo><mi>𝒦</mi><mo>×</mo><mi>𝒲</mi><mo>×</mo><mi>ℛ</mi><mo>×</mo><mi>𝒫</mi><mo>×</mo><mi>ℰ</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>t</mi></msub><mo>,</mo><msub><mi>K</mi><mi>t</mi></msub><mo>,</mo><msub><mi>W</mi><mi>t</mi></msub><mo>,</mo><msub><mi>R</mi><mi>t</mi></msub><mo>,</mo><msub><mi>P</mi><mi>t</mi></msub><mo>,</mo><msub><mi>E</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal S=\mathcal X\times\mathcal K\times\mathcal W\times\mathcal R\times\mathcal P\times\mathcal E, \qquad S_t=(X_t,K_t,W_t,R_t,P_t,E_t).</annotation></semantics></math></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Component</th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math></td>
+<td style="text-align: left;">Domain and operational state</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>t</mi></msub><annotation encoding="application/x-tex">K_t</annotation></semantics></math></td>
+<td style="text-align: left;">Knowledge and epistemic state</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mi>t</mi></msub><annotation encoding="application/x-tex">W_t</annotation></semantics></math></td>
+<td style="text-align: left;">Workflow and process state</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>t</mi></msub><annotation encoding="application/x-tex">R_t</annotation></semantics></math></td>
+<td style="text-align: left;">Runtime state of agents</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mi>t</mi></msub><annotation encoding="application/x-tex">P_t</annotation></semantics></math></td>
+<td style="text-align: left;">Policies, permissions, and invariants</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>t</mi></msub><annotation encoding="application/x-tex">E_t</annotation></semantics></math></td>
+<td style="text-align: left;">External environment state</td>
+</tr>
+</tbody>
+</table>
+<p>These components have different semantics even when stored in the
+same database.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §1 · State space</p>
+<div class="it" id="R4"><b>R4</b><span class="tag s">Strength</span>The six components have different update rules, owners, and trust levels. Separating them is the most useful idea in the document. The sentence “different semantics even when stored in the same database” is correct and often missed in practice.</div>
+<div class="it" id="R5"><b>R5</b><span class="tag w">Weakness</span>S<sub>t</sub> has two meanings in this document. §1 says “the complete state of the modeled system”. §7 says S<sub>t</sub> may instead be “only the application’s stored state”. §11 uses S<sub>t</sub><sup>owned</sup>. §18 defines Ξ<sub>t</sub> as “observations <em>or</em> modeled external state”, so the choice is still open at the end. Every Markov claim, every invariant, and the event-sourcing reconstruction depend on which meaning applies.</div>
+<div class="rec" id="R5-rec"><b>R5 fix</b><span class="tag f">Recommendation</span>R6 gives the split. Concrete edits: (1) §1, first sentence: “Let S<sub>t</sub><sup>world</sup> be the complete state of the modeled world.” (2) Add: “S<sub>t</sub><sup>owned</sup> = ω(S<sub>t</sub><sup>world</sup>), where ω keeps X, K, W, P, Ê, Π, and the persisted part of R.” (3) §9 and §10 use S<sup>world</sup>. (4) §11 to §16 use S<sup>owned</sup>; §11 already does. (5) §18: Ξ<sub>t</sub> := Ê<sub>t</sub>, the observations. E<sup>real</sup> stays only in S<sup>world</sup>.</div>
+<div class="it" id="R6"><b>R6</b><span class="tag f">Suggestion</span>Define two objects and keep them apart. S<sub>t</sub><sup>world</sup> is everything that affects the next transition, including E<sub>t</sub><sup>real</sup>, human intentions, and agent context. S<sub>t</sub><sup>owned</sup> = proj(S<sub>t</sub><sup>world</sup>) is what the app stores and can replay. Then T is Markov on S<sup>world</sup> by construction. On S<sup>owned</sup> it is not Markov, and the missing part is exactly what the actors see only through O<sub>i</sub>. Each later section then names which of the two it uses.</div>
+<div class="it" id="R7"><b>R7</b><span class="tag w">Weakness</span>The product 𝒳×𝒦×𝒲×ℛ×𝒫×ℰ suggests independent components. They are coupled. P<sub>t</sub> reads the full S<sub>t</sub> (§6). The invariant published ⇒ human_approved (§12) links workflow state to policy state. Claims in K refer to entities in X. A product is correct as a type. Say that T and 𝒞 couple the components.</div>
+<div class="rec" id="R7-rec"><b>R7 fix</b><span class="tag f">Recommendation</span>Add after the §1 table: “The product is the type of S. The components are coupled: one transition can update several components, and 𝒞 relates them. One commit updates all affected components atomically.” The last sentence is the implementation rule: one transaction per event, not one per component.</div>
+<div class="it" id="R8"><b>R8</b><span class="tag w">Weakness</span>12 symbols carry two or more meanings. The reader must infer the meaning from the section.
+<table>
+<thead><tr><th>Symbol</th><th>Meaning 1</th><th>Meaning 2 (and 3)</th></tr></thead>
+<tbody>
+<tr><td>γ</td><td>claim confidence γ<sub>i</sub> ∈ [0,1] (§3)</td><td>discount factor 0 ≤ γ &lt; 1 (§13)</td></tr>
+<tr><td>π, Π</td><td>claim provenance π<sub>i</sub> (§3)</td><td>agent strategy π<sub>t</sub><sup>i</sup> (§5); provenance is then Π<sub>t</sub> (§16), a second letter for the same idea</td></tr>
+<tr><td>τ</td><td>entity type τ ∈ 𝒯 (§2)</td><td>available tools τ<sub>t</sub><sup>i</sup> (§5)</td></tr>
+<tr><td>c</td><td>claim c<sub>i</sub> (§3)</td><td>active context c<sub>t</sub><sup>i</sup> (§5); conclusion c (§16)</td></tr>
+<tr><td>R, ℛ</td><td>runtime state ℛ, R<sub>t</sub> (§1, §5)</td><td>relation types ℛ<sub>rel</sub> (§2); risk R(m,x) (§13)</td></tr>
+<tr><td>Q</td><td>workflow states Q<sub>j</sub> (§4), Q<sub>t</sub> (§18)</td><td>estimated quality Q(m,x) (§13)</td></tr>
+<tr><td>δ</td><td>workflow transition δ<sub>j</sub> (§4)</td><td>point mass δ<sub>F(S,A)</sub> (§9)</td></tr>
+<tr><td>L</td><td>edge set L<sub>t</sub> (§2)</td><td>latency L(m,x) (§13)</td></tr>
+<tr><td>m</td><td>agent memory m<sub>t</sub><sup>i</sup> (§5)</td><td>model m in the router (§13)</td></tr>
+<tr><td>P, 𝒫</td><td>policy state component P<sub>t</sub> (§1)</td><td>authorization predicate P<sub>t</sub>(S<sub>t</sub>,i,a) (§6); authorization policy 𝒫 inside 𝔄 (§17)</td></tr>
+<tr><td>F</td><td>transition map F: 𝒮×𝒜→𝒮 (§0)</td><td>event reducer in fold(F, S<sub>0</sub>, e<sub>1</sub>,…) with type 𝒮×Event→𝒮 (§11); per-actor F<sub>i</sub> (§15)</td></tr>
+<tr><td>i</td><td>index of knowledge record k<sub>i</sub> (§3)</td><td>actor index i (§5 onward)</td></tr>
+</tbody></table>
+Two words also have two meanings: “policy” (agent strategy in §5, authorization in §6) and “belief” (stored claim in §3 and §18, an actor’s private distribution in §10). ℐ (actors, §8) and I<sub>k</sub> (invariants, §12) differ only by font.</div>
+<div class="rec" id="R8-rec"><b>R8 fix</b><span class="tag f">Recommendation</span>R9 gives the renames. Also add a rule for future edits: every new symbol goes into the notation table first, and a symbol already in the table is not reused. Use 3 columns: symbol, meaning, section of definition.</div>
+<div class="it" id="R9"><b>R9</b><span class="tag f">Suggestion</span>Add a one-page notation table after the contents. Any consistent set of names works. One option: confidence γ<sub>i</sub> → κ<sub>i</sub>; drop π<sub>i</sub> and point to Π (§16); agent strategy π<sub>t</sub><sup>i</sup> → ψ<sub>t</sub><sup>i</sup>; tools τ<sub>t</sub><sup>i</sup> → Θ<sub>t</sub><sup>i</sup>; context c<sub>t</sub><sup>i</sup> → ctx<sub>t</sub><sup>i</sup>; router terms → quality(m,x), cost(m,x), latency(m,x), risk(m,x); workflow transition δ<sub>j</sub> → η<sub>j</sub>; memory m → mem; authorization predicate → auth(S,i,a); reducer F → apply; knowledge index → n.</div>
+</aside>
+<h2 id="domain-state-x_t">2. Domain state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math></h2>
+<p>For an AI R&amp;D OS, domain objects include sources, projects,
+experiments, artifacts, people, models, and tools. Let the entities be
+typed:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>t</mi></msub><mo>=</mo><munder><mo>⋃</mo><mrow><mi>τ</mi><mo>∈</mo><mi>𝒯</mi></mrow></munder><msubsup><mi>V</mi><mi>t</mi><mi>τ</mi></msubsup><mo>,</mo><mspace width="2.0em"></mspace><mi>𝒯</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">j</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">k</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">E</mi><mi mathvariant="normal">x</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi></mrow><mo>,</mo><mi>…</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">V_t=\bigcup_{\tau\in\mathcal T}V_t^\tau, \qquad \mathcal T=\{\mathrm{Source},\mathrm{Project},\mathrm{Person},\mathrm{Workflow},\mathrm{Model},\mathrm{Experiment},\ldots\}.</annotation></semantics></math></p>
+<p>Use a <em>typed, attributed graph</em> for the conceptual domain
+model:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><msub><mi>G</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>V</mi><mi>t</mi></msub><mo>,</mo><msub><mi>L</mi><mi>t</mi></msub><mo>,</mo><msub><mi>ϕ</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>L</mi><mi>t</mi></msub><mo>⊆</mo><msub><mi>V</mi><mi>t</mi></msub><mo>×</mo><msub><mi>ℛ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi></mrow></msub><mo>×</mo><msub><mi>V</mi><mi>t</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">X_t=G_t=(V_t,L_t,\phi_t), \qquad L_t\subseteq V_t\times\mathcal R_{\mathrm{rel}}\times V_t.</annotation></semantics></math></p>
+<p>Here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>t</mi></msub><annotation encoding="application/x-tex">L_t</annotation></semantics></math>
+is a set of labeled edges,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ℛ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal R_{\mathrm{rel}}</annotation></semantics></math>
+is the set of relation types, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϕ</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\phi_t(v)</annotation></semantics></math>
+contains the attributes of entity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>.
+For example:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">V</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">k</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi><mn mathvariant="normal">42</mn></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">k</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi><mn mathvariant="normal">42</mn></mrow><mo>,</mo><mrow><mi mathvariant="normal">u</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">s</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">O</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">s</mi><mn mathvariant="normal">5.5</mn></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">j</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi><mn mathvariant="normal">7</mn></mrow><mo>,</mo><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">s</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">k</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi><mn mathvariant="normal">42</mn></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex"> (\mathrm{SourceVideo},\mathrm{contains},\mathrm{Workflow42}), \quad (\mathrm{Workflow42},\mathrm{uses},\mathrm{Opus5.5}), \quad (\mathrm{Project7},\mathrm{implements},\mathrm{Workflow42}). </annotation></semantics></math></p>
+<p>This does <strong>not</strong> require a graph database: relational
+tables can implement the same typed graph.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §2 · Domain state</p>
+<div class="it" id="R10"><b>R10</b><span class="tag s">Strength</span>A typed, attributed graph is the right conceptual model. The examples come from real use (SourceVideo, Workflow42, Opus5.5), which makes the definitions checkable. The note that relational tables can implement it is correct and keeps the build small.</div>
+<div class="it" id="R11"><b>R11</b><span class="tag w">Weakness</span>Workflow is a domain type in 𝒯 (§2) and also process state W<sub>t</sub> (§4). The edge (Project7, implements, Workflow42) treats Workflow42 as a domain entity. The document does not say whether W<sub>t</sub><sup>(42)</sup> is the same object.</div>
+<div class="rec" id="R11-rec"><b>R11 fix</b><span class="tag f">Recommendation</span>R12 gives the split. Concrete: in 𝒯, replace Workflow with WorkflowDef. In §4, W<sub>t</sub><sup>(j)</sup> is run j. Add the edge (run j, instance_of, WorkflowDef k) in X. Then Workflow42 is a WorkflowDef, and each new video ingestion creates a new run.</div>
+<div class="it" id="R12"><b>R12</b><span class="tag f">Suggestion</span>Split definition from run. A Workflow node in X is a versioned definition (a template). A WorkflowRun in W is one execution with its own q<sub>t</sub>. One definition has many runs. Most workflow engines use this class/instance split.</div>
+<div class="it" id="R13"><b>R13</b><span class="tag w">Weakness</span>Person is an entity type in X, and human actors form ℐ<sub>H</sub> (§8). The link between a Person node and an actor in ℐ<sub>H</sub> is not stated. Authorization (§6) needs this link: a rule attached to a Person must reach the actor who acts.</div>
+<div class="rec" id="R13-rec"><b>R13 fix</b><span class="tag f">Recommendation</span>Add an Actor entity type to 𝒯 and a one-to-one map between Actor nodes and ℐ. A human Actor node links to its Person node. Authorization rules refer to Actor nodes. The provenance agent nodes (R81) are the same Actor nodes, so one object answers “who acted”.</div>
+<div class="it" id="R14"><b>R14</b><span class="tag w">Weakness</span>(Workflow42, uses, Opus5.5) changes over time because models change version. Say whether a version upgrade creates a new entity or changes an attribute. The answer matters for §9, because the kernel T changes when the model changes (see <a href="#R46">R46</a>).</div>
+<div class="rec" id="R14-rec"><b>R14 fix</b><span class="tag f">Recommendation</span>Make each model version its own immutable entity: Opus5.5 is one node, and a later version is a new node. Give the edge (Workflow42, uses, …) a valid-from timestamp. An upgrade is then an event that moves the edge, and the log shows exactly when T changed (see R46).</div>
+</aside>
+<h2 id="knowledge-state-k_t">3. Knowledge state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>t</mi></msub><annotation encoding="application/x-tex">K_t</annotation></semantics></math></h2>
+<p>A stored statement need not be true. Represent a knowledge record
+as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mi>i</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>c</mi><mi>i</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>i</mi></msub><mo>,</mo><msub><mi>γ</mi><mi>i</mi></msub><mo>,</mo><msub><mi>π</mi><mi>i</mi></msub><mo>,</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>K</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>k</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>k</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">k_i=(c_i,\sigma_i,\gamma_i,\pi_i,t_i), \qquad K_t=\{k_1,\ldots,k_n\},</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mi>i</mi></msub><annotation encoding="application/x-tex">c_i</annotation></semantics></math>
+is a proposition or claim,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\sigma_i</annotation></semantics></math>
+its source,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mi>i</mi></msub><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\gamma_i\in[0,1]</annotation></semantics></math>
+a confidence assessment,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\pi_i</annotation></semantics></math>
+its provenance, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mi>i</mi></msub><annotation encoding="application/x-tex">t_i</annotation></semantics></math>
+a timestamp. For example, “Workflow X reduces implementation latency”
+may have estimated confidence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mi>i</mi></msub><mo>=</mo><mn>0.71</mn></mrow><annotation encoding="application/x-tex">\gamma_i=0.71</annotation></semantics></math>
+rather than being stored as unquestioned fact.</p>
+<blockquote>
+<p><strong>Epistemic rule:</strong> data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≠</mo><annotation encoding="application/x-tex">\ne</annotation></semantics></math>
+belief
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≠</mo><annotation encoding="application/x-tex">\ne</annotation></semantics></math>
+verified fact. A numeric confidence is meaningful only if its
+interpretation and calibration are specified; otherwise it is an
+annotation, not a probability theorem.</p>
+</blockquote>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §3 · Knowledge state</p>
+<div class="it" id="R15"><b>R15</b><span class="tag s">Strength</span>The epistemic rule and the calibration caveat are the most precise statements in the document. Treating γ<sub>i</sub> as an annotation unless its calibration is specified is correct.</div>
+<div class="it" id="R16"><b>R16</b><span class="tag w">Weakness</span>σ<sub>i</sub> (source) and π<sub>i</sub> (provenance) overlap. A source is the first node of a provenance chain. §16 then adds Π<sub>t</sub> as a separate DAG. So three places record where a claim came from.</div>
+<div class="rec" id="R16-rec"><b>R16 fix</b><span class="tag f">Recommendation</span>R17 gives the fix. Concrete: the claim record becomes k<sub>n</sub> = (c<sub>n</sub>, κ<sub>n</sub>, s<sub>n</sub>, t<sub>n</sub>), where s<sub>n</sub> is the node in Π<sub>t</sub> that produced the claim. Delete π<sub>i</sub> from §3.</div>
+<div class="it" id="R17"><b>R17</b><span class="tag f">Suggestion</span>Keep σ<sub>i</sub> as a pointer into Π<sub>t</sub> and drop π<sub>i</sub>. Then “Why do you believe this?” (§16) reads one structure.</div>
+<div class="it" id="R18"><b>R18</b><span class="tag w">Weakness</span>K<sub>t</sub> is a set with no update rule. Real claims are contradicted, superseded, and retracted. In a plain set, a new claim “Workflow X does not reduce latency” sits next to the old claim with no link between them.</div>
+<div class="rec" id="R18-rec"><b>R18 fix</b><span class="tag f">Recommendation</span>R19 gives the fields. Formal version: K<sub>t</sub> = (C<sub>t</sub>, supersedes<sub>t</sub>, contradicts<sub>t</sub>, status<sub>t</sub>). C<sub>t</sub> is the set of claim records. supersedes and contradicts are relations on C<sub>t</sub>. status<sub>t</sub>: C<sub>t</sub> → {active, superseded, retracted}. A retraction is an event that changes status and never deletes. Queries show active claims by default.</div>
+<div class="it" id="R19"><b>R19</b><span class="tag f">Suggestion</span>Add typed relations between claims: supports, contradicts, supersedes. Add a status field: active, superseded, retracted. Do not delete old claims, because the event log (§11) needs them for replay.</div>
+<div class="it" id="R20"><b>R20</b><span class="tag w">Weakness</span>Claims c<sub>i</sub> do not reference entities in X. “Workflow X reduces implementation latency” names Workflow X only in its text. Without a typed link, the query “all claims about Workflow42” becomes a text search.</div>
+<div class="rec" id="R20-rec"><b>R20 fix</b><span class="tag f">Recommendation</span>Add a field about<sub>n</sub> ⊆ V<sub>t</sub> to each claim: the entities the claim is about. Store it as edges (claim, about, entity). The extraction agent fills it when it creates the claim. Then “all claims about Workflow42” is a graph query, not a text search.</div>
+<div class="it" id="R21"><b>R21</b><span class="tag w">Weakness</span>“Belief” has two meanings. Here it is a stored claim in K<sub>t</sub>: one shared copy for all actors. In §10, b<sub>t</sub><sup>i</sup> is private to actor i and is a distribution over S<sub>t</sub>. §18 calls B<sub>t</sub> “claims, beliefs”. Use “claim” for the stored record and “belief” for the actor’s private state.</div>
+<div class="rec" id="R21-rec"><b>R21 fix</b><span class="tag f">Recommendation</span>In §18, rename B<sub>t</sub> to “claims and confidence assessments” and remove “beliefs”. Keep “belief” and b<sub>t</sub><sup>i</sup> for §10 only. Add one sentence to §10: “A claim in K<sub>t</sub> is shared data. A belief b<sub>t</sub><sup>i</sup> is private to actor i. An agent can use claims as evidence for its belief.”</div>
+</aside>
+<h2 id="workflow-state-w_t">4. Workflow state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mi>t</mi></msub><annotation encoding="application/x-tex">W_t</annotation></semantics></math></h2>
+<p>An evolving process is more than a static entity. A workflow
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+can be represented by a finite-state machine, DAG, or Petri net:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>W</mi><mi>t</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>q</mi><mi>t</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msubsup><mi>D</mi><mi>t</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msubsup><mi>q</mi><mi>t</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>∈</mo><msub><mi>Q</mi><mi>j</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msubsup><mi>q</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msub><mi>δ</mi><mi>j</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>q</mi><mi>t</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msub><mi>a</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">W_t^{(j)}=(q_t^{(j)},D_t^{(j)}), \qquad q_t^{(j)}\in Q_j, \qquad q_{t+1}^{(j)}=\delta_j(q_t^{(j)},a_t).</annotation></semantics></math></p>
+<p>For transcript ingestion,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>j</mi></msub><annotation encoding="application/x-tex">Q_j</annotation></semantics></math>
+might contain <code>raw</code>, <code>parsed</code>,
+<code>summarized</code>, <code>workflow-extracted</code>,
+<code>reviewed</code>, and <code>implemented</code>. Dependencies,
+concurrent tasks, and retries may need a richer formalism than a single
+finite-state machine. Explicit process state avoids an unstructured pile
+of Boolean flags.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §4 · Workflow state</p>
+<div class="it" id="R22"><b>R22</b><span class="tag s">Strength</span>Explicit process state instead of a pile of Boolean flags is a correct and practical rule. The statement that dependencies, concurrency, and retries may need more than one finite-state machine is honest.</div>
+<div class="it" id="R23"><b>R23</b><span class="tag w">Weakness</span>D<sub>t</sub><sup>(j)</sup> is never defined. From context it can mean data, dependencies, or a deadline.</div>
+<div class="rec" id="R23-rec"><b>R23 fix</b><span class="tag f">Recommendation</span>Define D<sub>t</sub><sup>(j)</sup> as the run data: D<sub>t</sub><sup>(j)</sup> = (inputs, outputs, attempts) of run j. If the author meant dependencies, give them their own symbol, for example Dep ⊆ runs × runs, and say that a run starts only when its dependencies are in a done state.</div>
+<div class="it" id="R24"><b>R24</b><span class="tag w">Weakness</span>δ<sub>j</sub>(q, a<sub>t</sub>) accepts every action a<sub>t</sub>, but most actions do not touch workflow j. Define δ<sub>j</sub>(q, a) = q for actions outside workflow j. As written, the equation lets every action move every workflow.</div>
+<div class="rec" id="R24-rec"><b>R24 fix</b><span class="tag f">Recommendation</span>Replace the equation with: q<sub>t+1</sub><sup>(j)</sup> = δ<sub>j</sub>(q<sub>t</sub><sup>(j)</sup>, a<sub>t</sub>) if a<sub>t</sub> ∈ 𝒜<sup>(j)</sup>, else q<sub>t</sub><sup>(j)</sup>. 𝒜<sup>(j)</sup> is the set of actions that name run j. In code this is a filter: the workflow reducer handles only events that carry its run id.</div>
+<div class="it" id="R25"><b>R25</b><span class="tag f">Suggestion</span>The example list has only success states: raw → parsed → summarized → workflow-extracted → reviewed → implemented. Add failed, cancelled, and waiting_approval. The waiting_approval state is where §14’s proposals live (see <a href="#R72">R72</a>).</div>
+</aside>
+<h2 id="agent-runtime-state-r_t">5. Agent runtime state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>t</mi></msub><annotation encoding="application/x-tex">R_t</annotation></semantics></math></h2>
+<p>For agent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
+define</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>R</mi><mi>t</mi><mi>i</mi></msubsup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>g</mi><mi>t</mi><mi>i</mi></msubsup><mo>,</mo><msubsup><mi>m</mi><mi>t</mi><mi>i</mi></msubsup><mo>,</mo><msubsup><mi>c</mi><mi>t</mi><mi>i</mi></msubsup><mo>,</mo><msubsup><mi>π</mi><mi>t</mi><mi>i</mi></msubsup><mo>,</mo><msubsup><mi>h</mi><mi>t</mi><mi>i</mi></msubsup><mo>,</mo><msubsup><mi>τ</mi><mi>t</mi><mi>i</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>R</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>R</mi><mi>t</mi><mn>1</mn></msubsup><mo>,</mo><mi>…</mi><mo>,</mo><msubsup><mi>R</mi><mi>t</mi><mi>N</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">R_t^i=(g_t^i,m_t^i,c_t^i,\pi_t^i,h_t^i,\tau_t^i), \qquad R_t=(R_t^1,\ldots,R_t^N),</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+is the goal,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+memory,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+active context,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math>
+the policy or strategy,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
+execution history, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+the available tools. Two identical domain databases can produce
+different future behavior if the agents have different goals or memory.
+This runtime state can be partly ephemeral, but it must be included when
+the model aims to predict the next transition.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §5 · Agent runtime state</p>
+<div class="it" id="R26"><b>R26</b><span class="tag s">Strength</span>“Two identical domain databases can produce different future behavior” is the sentence that justifies R<sub>t</sub>. It is correct, and it is the main difference from a classical application.</div>
+<div class="it" id="R27"><b>R27</b><span class="tag w">Weakness</span>π<sub>t</sub><sup>i</sup> here is the agent’s strategy. §6 uses “policy” for authorization. The same word has two meanings in two consecutive sections.</div>
+<div class="rec" id="R27-rec"><b>R27 fix</b><span class="tag f">Recommendation</span>Rename the agent’s π<sub>t</sub><sup>i</sup> to “strategy” ψ<sub>t</sub><sup>i</sup> (R9). Use “policy” only for authorization. After the rename, search the text for “policy” and check each use; §5 and §13 are the places at risk.</div>
+<div class="it" id="R28"><b>R28</b><span class="tag w">Weakness</span>The goal g<sub>t</sub><sup>i</sup> (§5) and the objective U<sub>i</sub> (§13) are not connected. Is g a target state, a predicate on states, or a text prompt? If g is text, U<sub>i</sub> cannot be computed from it.</div>
+<div class="rec" id="R28-rec"><b>R28 fix</b><span class="tag f">Recommendation</span>Define the goal as a predicate on owned states: g<sub>t</sub><sup>i</sup>: 𝒮<sup>owned</sup> → {0, 1}, “the task is done”. Keep the natural-language task text as a separate field, the task description. State who decides whether g holds: a human, a test, or an evaluator. U<sub>i</sub> can then include a reward for g = 1 minus costs (see R66). This makes the gap between the text and the predicate visible.</div>
+<div class="it" id="R29"><b>R29</b><span class="tag w">Weakness</span>Model identity (for example Opus 5.5 against a later version) and the system prompt are not in R<sub>t</sub><sup>i</sup>. Both change behavior as much as memory does. Today the model appears only as an entity in X (§2).</div>
+<div class="rec" id="R29-rec"><b>R29 fix</b><span class="tag f">Recommendation</span>Add 2 fields: R<sub>t</sub><sup>i</sup> = (model_id, prompt_id, g, mem, ctx, ψ, h). model_id and prompt_id point to immutable entities in X (R14). Every event records the model_id and prompt_id of the actor that produced it. A replay or an audit then knows which model produced each result.</div>
+<div class="it" id="R30"><b>R30</b><span class="tag w">Weakness</span>Human actors have no runtime state. Human goals, memory, and attention are not modeled, so human actions enter T as exogenous inputs. State this. It means T can respond to human actions but cannot predict them.</div>
+<div class="rec" id="R30-rec"><b>R30 fix</b><span class="tag f">Recommendation</span>Add to §5: “Human actors have no modeled runtime state. Their actions are exogenous inputs: T is defined for a given action, but the theory does not predict which action a human takes.” This keeps the theory small and honest. Add a human model only if you later need to predict human actions.</div>
+<div class="it" id="R31"><b>R31</b><span class="tag w">Weakness</span>Tools τ<sub>t</sub><sup>i</sup> duplicate admissibility 𝒜<sub>i</sub>(S<sub>t</sub>) (§6). An available tool is a family of admissible actions. Keep one of the two.</div>
+<div class="rec" id="R31-rec"><b>R31 fix</b><span class="tag f">Recommendation</span>Remove the tools field from R<sub>t</sub><sup>i</sup>. Define the tool set as derived: tools<sub>i</sub>(S<sub>t</sub>) = the action families with at least one admissible action in 𝒜<sub>i</sub>(S<sub>t</sub>). In the implementation, generate the tool list shown to the agent from the policy, so the two cannot disagree.</div>
+</aside>
+<h2 id="policy-state-p_t">6. Policy state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mi>t</mi></msub><annotation encoding="application/x-tex">P_t</annotation></semantics></math></h2>
+<p>Not every action is valid. Define state-dependent admissibility:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒜</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⊆</mo><msub><mi>𝒜</mi><mi>i</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>a</mi><mi>t</mi></msub><mo>∈</mo><msub><mi>𝒜</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathcal A_i(S_t)\subseteq\mathcal A_i, \qquad a_t\in\mathcal A_i(S_t),</annotation></semantics></math></p>
+<p>or an authorization predicate</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><mi>i</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">P_t(S_t,i,a)\in\{0,1\}.</annotation></semantics></math></p>
+<p>For instance, an agent may draft a report but require human
+authorization to publish it. The policy is part of the system’s
+operational state if permissions and approvals can change over time.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §6 · Policy state</p>
+<div class="it" id="R32"><b>R32</b><span class="tag s">Strength</span>State-dependent admissibility is the correct form. Treating permissions that change over time as state is correct.</div>
+<div class="it" id="R33"><b>R33</b><span class="tag f">Suggestion</span>The two forms are equivalent: 𝒜<sub>i</sub>(S) = { a ∈ 𝒜<sub>i</sub> : P<sub>t</sub>(S, i, a) = 1 }. Say so and keep one. Also, P<sub>t</sub> is a state component (§1) and a function that takes S<sub>t</sub>, which contains P<sub>t</sub>. That is valid, but then the subscript t in P<sub>t</sub>(S<sub>t</sub>, …) is redundant.</div>
+<div class="it" id="R34"><b>R34</b><span class="tag w">Weakness</span>There is no principal. In practice an agent acts on behalf of a human with that human’s credentials, for example a GitHub token. The model has actors but no “acts for” relation. Without it, the audit trail cannot answer “who authorized this agent to do this?”</div>
+<div class="rec" id="R34-rec"><b>R34 fix</b><span class="tag f">Recommendation</span>R35 gives the permission rule. Also add principal to every event: e<sub>t</sub> = (actor, principal, action, arguments, result, timestamp, provenance). For a chain (agent A starts sub-agent B), set principal(B) = principal(A), not A. Authority then never grows along a chain.</div>
+<div class="it" id="R35"><b>R35</b><span class="tag f">Suggestion</span>Add principal: ℐ<sub>A</sub> → ℐ<sub>H</sub> and require P(S, i, a) = 1 ⇒ P(S, principal(i), a) = 1. An agent then never has more permission than its principal. This one implication closes the most common escalation path.</div>
+</aside>
+<h2 id="external-state-e_t">7. External state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>t</mi></msub><annotation encoding="application/x-tex">E_t</annotation></semantics></math></h2>
+<p>The application interacts with GitHub, Drive, the web, deployment
+services, email, and APIs. Distinguish external reality from the app’s
+last observation:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>E</mi><mi>t</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi></mrow></msubsup><mspace width="2.0em"></mspace><mtext mathvariant="normal">versus</mtext><mspace width="2.0em"></mspace><msub><mover><mi>E</mi><mo accent="true">̂</mo></mover><mi>t</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">E_t^{\mathrm{real}} \qquad\text{versus}\qquad \widehat E_t.</annotation></semantics></math></p>
+<p>A local cache can be stale. If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_t</annotation></semantics></math>
+denotes the <strong>complete modeled world</strong>, it may contain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>E</mi><mi>t</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi></mrow></msubsup><annotation encoding="application/x-tex">E_t^{\mathrm{real}}</annotation></semantics></math>;
+if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_t</annotation></semantics></math>
+denotes only the <strong>application’s stored state</strong>, it
+contains merely
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>E</mi><mo accent="true">̂</mo></mover><mi>t</mi></msub><annotation encoding="application/x-tex">\widehat E_t</annotation></semantics></math>.
+Fix this boundary before claiming the system is Markovian.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §7 · External state</p>
+<div class="it" id="R36"><b>R36</b><span class="tag s">Strength</span>E<sup>real</sup> against Ê is correct and important. A stale local copy of external state is a common cause of wrong agent actions.</div>
+<div class="it" id="R37"><b>R37</b><span class="tag w">Weakness</span>The instruction “Fix this boundary before claiming the system is Markovian” is not carried out anywhere in the document (see <a href="#R5">R5</a>). “Markovian” is also never defined. Define it once: T depends on the past only through S<sub>t</sub>.</div>
+<div class="rec" id="R37-rec"><b>R37 fix</b><span class="tag f">Recommendation</span>Add a definition to §9: “A process is Markov on a state description Z if Pr(Z<sub>t+1</sub> | Z<sub>0:t</sub>, a<sub>0:t</sub>) = Pr(Z<sub>t+1</sub> | Z<sub>t</sub>, a<sub>t</sub>).” Then state: Markov on S<sup>world</sup> by construction; in general not Markov on S<sup>owned</sup> (R6). Change the §7 sentence to “See §9 for which state is Markov.”</div>
+<div class="it" id="R38"><b>R38</b><span class="tag w">Weakness</span>Irreversible actions are not treated. Sending an email, pushing to a public repository, or making a payment changes E<sup>real</sup>, and no owned inverse exists. Event sourcing (§11) can rebuild owned state but cannot undo these actions.</div>
+<div class="rec" id="R38-rec"><b>R38 fix</b><span class="tag f">Recommendation</span>R39 gives the classes. Also add a field to each action type: effect ∈ {owned, external-reversible, external-compensable, external-irreversible}. Add one default rule: effect = external-irreversible ⇒ class = approval, unless an explicit rule says free. For compensable actions, store the compensating action type, so the system can offer the undo.</div>
+<div class="it" id="R39"><b>R39</b><span class="tag f">Suggestion</span>Classify each action as reversible (an owned inverse exists), compensable (a correcting action exists, for example a retraction post), or irreversible. Then §14’s partition has a stated reason: irreversible external actions go to 𝒜<sub>approval</sub> by default.</div>
+<div class="it" id="R40"><b>R40</b><span class="tag f">Suggestion</span>Record the observation time of each part of Ê<sub>t</sub> (last_synced_at). An invariant can then block high-risk actions that depend on Ê older than a set age.</div>
+</aside>
+<h2 id="actors">8. Actors</h2>
+<p>Let</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℐ</mi><mo>=</mo><msub><mi>ℐ</mi><mi>H</mi></msub><mo>∪</mo><msub><mi>ℐ</mi><mi>A</mi></msub><mo>∪</mo><msub><mi>ℐ</mi><mi>S</mi></msub></mrow><annotation encoding="application/x-tex">\mathcal I=\mathcal I_H\cup\mathcal I_A\cup\mathcal I_S</annotation></semantics></math></p>
+<p>be human actors, AI agents, and autonomous software services. Actor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+has action space
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒜</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal A_i</annotation></semantics></math>.
+A concurrent joint action can be written</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>a</mi><mi>t</mi><mn>1</mn></msubsup><mo>,</mo><mi>…</mi><mo>,</mo><msubsup><mi>a</mi><mi>t</mi><mi>n</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><msub><mi>A</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">A_t=(a_t^1,\ldots,a_t^n), \qquad S_{t+1}=F(S_t,A_t).</annotation></semantics></math></p>
+<p>Human and agent actions may enter through different interfaces while
+affecting the same domain state.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §8 · Actors</p>
+<div class="it" id="R41"><b>R41</b><span class="tag w">Weakness</span>Three action models appear, and they conflict. (1) §0: one action a<sub>t</sub> from 𝒜<sub>human</sub> ∪ 𝒜<sub>agent</sub>, actor unknown. (2) §8–§9: a joint action A<sub>t</sub> = (a<sub>t</sub><sup>1</sup>, …, a<sub>t</sub><sup>n</sup>), all actors act in the same step. (3) §18: one action a<sub>t</sub> with actor i<sub>t</sub>. §15 then serializes actions, which fits (3) and not (2).</div>
+<div class="rec" id="R41-rec"><b>R41 fix</b><span class="tag f">Recommendation</span>R42 gives the model. Concrete edits: delete the joint action A<sub>t</sub> from §8 and §9. Replace the §8 equation with S<sub>t+1</sub> ∼ T(· | S<sub>t</sub>, i<sub>t</sub>, a<sub>t</sub>). Add a remark: “Simultaneous actions become an interleaving in commit order. §15 handles two actions that read the same version.” Then §0, §8, §9, and §18 all use (i<sub>t</sub>, a<sub>t</sub>).</div>
+<div class="it" id="R42"><b>R42</b><span class="tag f">Suggestion</span>Use interleaving semantics. t is the position in the committed event log. Each step has exactly one actor and one action, (i<sub>t</sub>, a<sub>t</sub>). Concurrency then appears as the order of commits and as merges (§15). This also defines t (see <a href="#R2">R2</a>) and matches the event model of §11. Keep joint actions only for true simultaneity, which an application with one commit point does not have.</div>
+<div class="it" id="R43"><b>R43</b><span class="tag w">Weakness</span>Changes that no actor makes have no actor: a GitHub repository changes, an API goes down, time passes. Add an environment actor (“nature”) to ℐ, or state that T contains these changes.</div>
+<div class="rec" id="R43-rec"><b>R43 fix</b><span class="tag f">Recommendation</span>Add an actor env: ℐ = ℐ<sub>H</sub> ∪ ℐ<sub>A</sub> ∪ ℐ<sub>S</sub> ∪ {env}. Its actions are observed external changes, for example ExternalChanged(resource, new_value, observed_at). They enter the log like other events. In practice they come from webhooks and sync jobs.</div>
+</aside>
+<h2 id="stochastic-transitions">9. Stochastic transitions</h2>
+<p>APIs fail, models vary, and the environment changes. Replace the
+deterministic function with a transition kernel:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>∼</mo><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mspace width="0.167em"></mspace><mo>⋅</mo><mo>∣</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><msub><mi>A</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>T</mi><mo>:</mo><mi>𝒮</mi><mo>×</mo><mi>𝒜</mi><mo>→</mo><mi>Δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝒮</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">S_{t+1}\sim T(\,\cdot\mid S_t,A_t), \qquad T:\mathcal S\times\mathcal A\longrightarrow\Delta(\mathcal S).</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝒮</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta(\mathcal S)</annotation></semantics></math>
+denotes distributions over future states. Deterministic
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+is the special case
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo>∣</mo><mi>S</mi><mo>,</mo><mi>A</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>δ</mi><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>A</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub></mrow><annotation encoding="application/x-tex">T(\cdot\mid S,A)=\delta_{F(S,A)}</annotation></semantics></math>,
+a point mass.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §9 · Stochastic transitions</p>
+<div class="it" id="R44"><b>R44</b><span class="tag s">Strength</span>The kernel form is correct, and the deterministic case as a point mass is stated correctly.</div>
+<div class="it" id="R45"><b>R45</b><span class="tag w">Weakness</span>𝒜 in T: 𝒮×𝒜 → Δ(𝒮) is never defined. For joint actions it would be ∏<sub>i</sub> 𝒜<sub>i</sub>. For interleaving it is ⋃<sub>i</sub> {i}×𝒜<sub>i</sub>.</div>
+<div class="rec" id="R45-rec"><b>R45 fix</b><span class="tag f">Recommendation</span>Define 𝒜 := ⋃<sub>i ∈ ℐ</sub> {i} × 𝒜<sub>i</sub>, so each action carries its actor. Then T: 𝒮 × 𝒜 → Δ(𝒮) is well-typed and matches the interleaving model (R42).</div>
+<div class="it" id="R46"><b>R46</b><span class="tag w">Weakness</span>T has no time index, so it is assumed stationary. It is not: a model upgrade, a new tool, or an API change alters T. Either put model and tool versions into S<sub>t</sub> (then T can stay fixed) or write T<sub>t</sub>.</div>
+<div class="rec" id="R46-rec"><b>R46 fix</b><span class="tag f">Recommendation</span>Keep T time-invariant and put all versions into the state: model_id and prompt_id (R29), tool versions, and API versions, as entities in X. A version change is then an ordinary event. This is better than writing T<sub>t</sub>, because the log shows when behavior changed and a replay knows which version applied.</div>
+<div class="it" id="R47"><b>R47</b><span class="tag w">Weakness</span>T cannot be estimated in practice. S includes LLM context (§5, §10), so the state space is too large to estimate transition probabilities. That is acceptable if T is a specification device (which outcomes are possible) and not a predictive model. Say which one it is.</div>
+<div class="rec" id="R47-rec"><b>R47 fix</b><span class="tag f">Recommendation</span>Add to §9: “T is a specification device. It defines which outcomes are possible (its support), not their probabilities.” Use the support in §12 and in model checking (R63). Estimate probabilities only for small projections that have data, for example Pr(tool call fails | tool, model), counted from the event log.</div>
+</aside>
+<h2 id="partial-observability">10. Partial observability</h2>
+<p>An actor rarely observes all of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_t</annotation></semantics></math>.
+Actor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+receives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>o</mi><mi>t</mi><mi>i</mi></msubsup><mo>∼</mo><msub><mi>O</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mspace width="0.167em"></mspace><mo>⋅</mo><mo>∣</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">o_t^i\sim O_i(\,\cdot\mid S_t)</annotation></semantics></math></p>
+<p>and can maintain the belief state</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>b</mi><mi>t</mi><mi>i</mi></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>Pr</mo><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mi>s</mi><mo>∣</mo><msubsup><mi>o</mi><mrow><mn>1</mn><mo>:</mo><mi>t</mi></mrow><mi>i</mi></msubsup><mo>,</mo><msubsup><mi>a</mi><mrow><mn>1</mn><mo>:</mo><mi>t</mi><mo>−</mo><mn>1</mn></mrow><mi>i</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">b_t^i(s)=\Pr\!\left(S_t=s\mid o_{1:t}^i,a_{1:t-1}^i\right).</annotation></semantics></math></p>
+<p>The actual state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>t</mi></msub><annotation encoding="application/x-tex">S_t</annotation></semantics></math>
+and the actor’s model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>b</mi><mi>t</mi><mi>i</mi></msubsup><annotation encoding="application/x-tex">b_t^i</annotation></semantics></math>
+are distinct. An LLM’s context is one input to that model. If active
+context affects future action selection, its contents are also part of
+agent runtime state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>R</mi><mi>t</mi><mi>i</mi></msubsup><annotation encoding="application/x-tex">R_t^i</annotation></semantics></math>;
+these are complementary descriptions at different levels.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §10 · Partial observability</p>
+<div class="it" id="R48"><b>R48</b><span class="tag s">Strength</span>Separating the true state from the actor’s model of it is the correct frame for agents. The statement that context is both part of R<sub>t</sub><sup>i</sup> and an input to the belief is correct.</div>
+<div class="it" id="R49"><b>R49</b><span class="tag w">Weakness</span>The belief formula conditions only on actor i’s own observations and actions. When other actors also act, an exact belief also needs a model of how they act. In multi-agent partially observable models (Dec-POMDPs, POSGs), a belief over S<sub>t</sub> alone is in general not a sufficient statistic. State the assumption: other actors are folded into T as part of the environment.</div>
+<div class="rec" id="R49-rec"><b>R49 fix</b><span class="tag f">Recommendation</span>Add the assumption to §10: “Each actor treats the other actors as part of the environment, with actions drawn from a fixed unknown distribution.” The single-agent formula then applies. This assumption fails when agents adapt to each other. In that case, coordinate through the shared log and version checks, not through models of each other’s beliefs.</div>
+<div class="it" id="R50"><b>R50</b><span class="tag w">Weakness</span>LLM agents do not compute this posterior. b<sub>t</sub><sup>i</sup> is normative (what a correct agent would believe), not descriptive. Say so. Otherwise the section reads as a claim about how agents work.</div>
+<div class="rec" id="R50-rec"><b>R50 fix</b><span class="tag f">Recommendation</span>Add one sentence: “b<sub>t</sub><sup>i</sup> is the belief a correct Bayesian agent would hold. An LLM agent approximates it from its context, and nothing checks the approximation.” Consequence: do not rely on the agent’s belief for safety. Rely on version checks (R51, R79) and invariants (§12).</div>
+<div class="it" id="R51"><b>R51</b><span class="tag f">Suggestion</span>Connect this section to §15. An agent’s context is a read taken at an earlier state version. Agents keep these reads for minutes, much longer than a human keeps a form open. Record the version the agent read. Then §14’s revalidation and §15’s merge can detect stale reads.</div>
+<div class="it" id="R52"><b>R52</b><span class="tag f">Suggestion</span>Add observation parity as a design rule. For the part of S that an action depends on, O<sub>human</sub> and O<sub>agent</sub> expose the same content, in different formats. Many “the agent did something strange” failures come from the agent and the human seeing different projections of the same state.</div>
+</aside>
+<h2 id="events-as-an-implementation-primitive">11. Events as an
+implementation primitive</h2>
+<p>Define an event as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">s</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">t</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">p</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">v</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">e_t=(\mathrm{actor},\mathrm{action},\mathrm{arguments},\mathrm{result},\mathrm{timestamp},\mathrm{provenance}).</annotation></semantics></math></p>
+<p>With a deterministic reducer, the application’s <em>owned persistent
+state</em> can be reconstructed as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>S</mi><mi>t</mi><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></msubsup><mo>=</mo><mo>fold</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>F</mi><mo>,</mo><msubsup><mi>S</mi><mn>0</mn><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></msubsup><mo>,</mo><msub><mi>e</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>e</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>F</mi><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>S</mi><mn>0</mn><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></msubsup><mo>,</mo><msub><mi>e</mi><mrow><mn>1</mn><mo>:</mo><mi>t</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">S_t^{\mathrm{owned}}=\operatorname{fold}(F,S_0^{\mathrm{owned}},e_1,\ldots,e_t)=F^*(S_0^{\mathrm{owned}},e_{1:t}).</annotation></semantics></math></p>
+<p>Example sequence:</p>
+<pre class="text"><code>SourceAdded(video_123)
+TranscriptExtracted(video_123)
+WorkflowDetected(workflow_17)
+WorkflowLinked(workflow_17, ext_workflow_4)
+SkillGenerated(skill_39)
+SkillEvaluated(skill_39, score=.84)</code></pre>
+<p>This is <strong>event sourcing</strong>. It supports audit trails,
+time travel, provenance, reproducibility, debugging, and accountability.
+Reconstruction requires a complete log and stable reducer semantics;
+external reality or unrecorded ephemeral state cannot be recovered from
+the application’s events alone. Event sourcing is an architectural
+option, not a mathematical requirement of the theory.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §11 · Events</p>
+<div class="it" id="R53"><b>R53</b><span class="tag s">Strength</span>The caveats are correct: a complete log, stable reducer semantics, and no recovery of external or ephemeral state. “An architectural option, not a mathematical requirement” is the correct status.</div>
+<div class="it" id="R54"><b>R54</b><span class="tag w">Weakness</span>The document does not state the main reason event sourcing fits this theory. §9 makes transitions stochastic. Each event records <em>result</em>, which is the sampled outcome. So replay is deterministic even though execution was not. This is the link between §9 and §11, and it is missing. See <a href="#R90">R90</a> (P1).</div>
+<div class="rec" id="R54-rec"><b>R54 fix</b><span class="tag f">Recommendation</span>Add to §11, after the fold equation: “Each event records the outcome that T produced, including model outputs and external responses. So the fold is deterministic even though T is stochastic: the randomness is resolved once, at execution, and stored.” Then state P1 (R90).</div>
+<div class="it" id="R55"><b>R55</b><span class="tag w">Weakness</span>F has a different type here. In §0, F: 𝒮×𝒜 → 𝒮. Here F folds events, so F: 𝒮×Event → 𝒮. Use a different name for the reducer, for example apply.</div>
+<div class="rec" id="R55-rec"><b>R55 fix</b><span class="tag f">Recommendation</span>Rename the reducer: S<sub>t</sub><sup>owned</sup> = fold(apply, S<sub>0</sub><sup>owned</sup>, e<sub>1</sub>, …, e<sub>t</sub>), with apply: 𝒮<sup>owned</sup> × Event → 𝒮<sup>owned</sup>. Keep F only for the single-step map in §0, or retire F once §9 introduces T.</div>
+<div class="it" id="R56"><b>R56</b><span class="tag f">Suggestion</span>Event schemas change over time. “Stable reducer semantics” then needs a versioning rule: each event carries a schema version, and the reducer handles every version still in the log, or the log is migrated once.</div>
+<div class="it" id="R57"><b>R57</b><span class="tag f">Suggestion</span>SkillEvaluated(skill_39, score=.84) is a claim with a source (the evaluator). It should also create a K record with provenance. Otherwise the score is data that looks like fact, which §3’s rule forbids.</div>
+</aside>
+<h2 id="state-invariants">12. State invariants</h2>
+<p>An invariant
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">I_k(S)</annotation></semantics></math>
+must hold for every reachable valid state. For example:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>x</mi><mo>∈</mo><mrow><mi mathvariant="normal">E</mi><mi mathvariant="normal">x</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi></mrow><mo>,</mo><mspace width="1.0em"></mspace><mi>x</mi><mi>.</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">t</mi></mrow><mo>≠</mo><mi>⌀</mi><mspace width="0.222em"></mspace><mo>⇒</mo><mspace width="0.222em"></mspace><mi>x</mi><mi>.</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">_</mi><mi mathvariant="normal">v</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi></mrow><mo>≠</mo><mi>⌀</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">\forall x\in\mathrm{Experiment},\quad x.\mathrm{result}\ne\varnothing\ \Longrightarrow\ x.\mathrm{code\_version}\ne\varnothing,</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.222em"></mspace><mo>⇒</mo><mspace width="0.222em"></mspace><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">_</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">v</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathrm{published}(x)\ \Longrightarrow\ \mathrm{human\_approved}(x).</annotation></semantics></math></p>
+<p>Define</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒮</mi><mrow><mi mathvariant="normal">v</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>S</mi><mo>∈</mo><mi>𝒮</mi><mo>:</mo><msub><mi>I</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∧</mo><mi>⋯</mi><mo>∧</mo><msub><mi>I</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal S_{\mathrm{valid}}=\{S\in\mathcal S:I_1(S)\land\cdots\land I_n(S)\}.</annotation></semantics></math></p>
+<p>Then constrain the kernel:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mi>′</mi><mo>∣</mo><mi>S</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>0</mn><mspace width="0.222em"></mspace><mo>⇒</mo><mspace width="0.222em"></mspace><mi>S</mi><mi>′</mi><mo>∈</mo><msub><mi>𝒮</mi><mrow><mi mathvariant="normal">v</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">T(S&#39;\mid S,a)&gt;0\ \Longrightarrow\ S&#39;\in\mathcal S_{\mathrm{valid}}.</annotation></semantics></math></p>
+<p>In continuous state spaces, express the same condition as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝒮</mi><mrow><mi mathvariant="normal">v</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>∣</mo><mi>S</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">T(\mathcal S_{\mathrm{valid}}\mid S,a)=1</annotation></semantics></math>.
+This is a formal specification; its enforcement depends on transactional
+checks and correct implementations.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §12 · Invariants</p>
+<div class="it" id="R58"><b>R58</b><span class="tag s">Strength</span>Invariants as a constraint on the support of T is a clean formal statement. The last sentence (enforcement depends on transactions and correct code) is correct.</div>
+<div class="it" id="R59"><b>R59</b><span class="tag w">Weakness</span>“Must hold for every reachable valid state” is circular, because “valid” is defined by the invariants two lines later. Write “every reachable state”.</div>
+<div class="rec" id="R59-rec"><b>R59 fix</b><span class="tag f">Recommendation</span>Replace the sentence with: “An invariant I<sub>k</sub> is a predicate on owned states. The system is safe if I<sub>k</sub>(S) holds for every state S reachable from S<sub>0</sub>.”</div>
+<div class="it" id="R60"><b>R60</b><span class="tag w">Weakness</span>published(x) ⇒ human_approved(x) repeats the approval rule of §6 and §14 through a second mechanism. Both can exist. Say which one enforces. A policy check blocks the action. An invariant check blocks the resulting state. The invariant check runs later, so it decides when the two disagree.</div>
+<div class="rec" id="R60-rec"><b>R60 fix</b><span class="tag f">Recommendation</span>Keep both on purpose, with fixed roles. Write in §12: “The policy check is the primary gate. Invariants restate the highest-risk policy rules as state properties. The commit checks them after it applies the action, so a bug in the policy check cannot produce an invalid state.” Use this duplication only for high-risk rules.</div>
+<div class="it" id="R61"><b>R61</b><span class="tag w">Weakness</span>T(S′ | S, a) &gt; 0 ⇒ S′ ∈ 𝒮<sub>valid</sub> cannot hold for E<sup>real</sup>: the app cannot guarantee that an external system stays valid. Restrict invariants to owned state. State that a failed check produces a rejection event and leaves owned state unchanged.</div>
+<div class="rec" id="R61-rec"><b>R61 fix</b><span class="tag f">Recommendation</span>Replace the kernel constraint with a statement on owned state: T<sup>owned</sup>(𝒮<sub>valid</sub><sup>owned</sup> | S, i, a) = 1. A failed check appends the event Rejected(i, a, reason) and changes nothing else. For external state, use “monitored conditions” instead of invariants: they raise an alert when violated, but the system cannot enforce them.</div>
+<div class="it" id="R62"><b>R62</b><span class="tag w">Weakness</span>Invariants on 𝒮<sub>valid</sub> are safety properties (“nothing bad happens”). Liveness properties are not state predicates, for example “every proposal eventually commits or expires” or “no workflow stays in running forever”. They need temporal logic.</div>
+<div class="rec" id="R62-rec"><b>R62 fix</b><span class="tag f">Recommendation</span>Add a short subsection “Liveness” with 2 temporal properties: □(proposed(p) ⇒ ◇(committed(p) ∨ expired(p))) and □(running(r) ⇒ ◇¬running(r)). Implement both with deadlines: each proposal and each run has an expires_at, and a system actor expires it. The deadline turns a liveness property into a rule that code can enforce.</div>
+<div class="it" id="R63"><b>R63</b><span class="tag f">Suggestion</span>The document already has states, actions, and invariants. That is the input format of TLA+. A one-page TLA+ specification of the workflow and approval states can be model-checked with TLC for safety and liveness. This is the lowest-cost way to get real guarantees from the theory.</div>
+</aside>
+<h2 id="goals-and-utility">13. Goals and utility</h2>
+<p>For actor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
+let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mi>i</mi></msub><mo>:</mo><mi>𝒮</mi><mo>×</mo><mi>𝒜</mi><mo>→</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">U_i:\mathcal S\times\mathcal A\to\mathbb R</annotation></semantics></math>
+describe an objective. A simple sequential decision-maker maximizes</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><mo accent="false">∞</mo></munderover><msup><mi>γ</mi><mi>t</mi></msup><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><msub><mi>a</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>γ</mi><mo>&lt;</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathbb E\left[\sum_{t=0}^{\infty}\gamma^t r(S_t,a_t)\right], \qquad 0\le\gamma&lt;1.</annotation></semantics></math></p>
+<p>In practice, preserve multiple objectives:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐔</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi mathvariant="normal">q</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">y</mi></mrow></msub><mo>,</mo><msub><mi>U</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>,</mo><msub><mi>U</mi><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">y</mi></mrow></msub><mo>,</mo><msub><mi>U</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">y</mi></mrow></msub><mo>,</mo><msub><mi>U</mi><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mspace width="0.222em"></mspace><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">t</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathbf U=(U_{\mathrm{quality}},U_{\mathrm{cost}},U_{\mathrm{latency}},U_{\mathrm{safety}},U_{\mathrm{human\ effort}}).</annotation></semantics></math></p>
+<p>For a model router and task
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>Q</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>λ</mi><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>μ</mi><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>ρ</mi><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msup><mi>m</mi><mo>*</mo></msup><mo>=</mo><mo>arg</mo><munder><mo>max</mo><mi>m</mi></munder><mi>J</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">J(m,x)=Q(m,x)-\lambda C(m,x)-\mu L(m,x)-\rho R(m,x), \qquad m^*=\arg\max_m J(m,x),</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
+is estimated quality,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+cost,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+latency, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+risk. The weights encode tradeoffs; some safety requirements should
+instead be hard constraints.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §13 · Goals and utility</p>
+<div class="it" id="R64"><b>R64</b><span class="tag s">Strength</span>“Some safety requirements should instead be hard constraints” is correct. With a penalty weight ρ, a large enough quality gain can buy any amount of risk.</div>
+<div class="it" id="R65"><b>R65</b><span class="tag w">Weakness</span>The infinite discounted sum with 0 ≤ γ &lt; 1 is not motivated. Most AI R&amp;D tasks end, so an episodic sum fits better. γ is also already the confidence symbol (§3).</div>
+<div class="rec" id="R65-rec"><b>R65 fix</b><span class="tag f">Recommendation</span>Replace the infinite sum with an episodic sum: E[Σ<sub>t=0</sub><sup>t_end</sup> r<sub>i</sub>(S<sub>t</sub>, a<sub>t</sub>)], where t_end is the step at which the goal g holds or the task is cancelled. If you keep a discount, name it β, not γ (R9).</div>
+<div class="it" id="R66"><b>R66</b><span class="tag w">Weakness</span>U<sub>i</sub>: 𝒮×𝒜 → ℝ is defined, then the sum uses r(S<sub>t</sub>, a<sub>t</sub>) with no actor index. The relation between U<sub>i</sub> and r is not stated.</div>
+<div class="rec" id="R66-rec"><b>R66 fix</b><span class="tag f">Recommendation</span>Pick one object. Keep r<sub>i</sub>: 𝒮 × 𝒜 → ℝ as the per-step reward of actor i. Define U<sub>i</sub> as the expected episodic sum in R65. Delete the separate first definition of U<sub>i</sub>.</div>
+<div class="it" id="R67"><b>R67</b><span class="tag w">Weakness</span>The text says “preserve multiple objectives”, then J combines them with fixed weights λ, μ, ρ. That removes the separation. If the objectives must stay separate, the output is a Pareto set, not one m*.</div>
+<div class="rec" id="R67-rec"><b>R67 fix</b><span class="tag f">Recommendation</span>Use 2 stages. (1) Filter: remove every model that breaks a hard constraint, for example risk above a set limit. (2) Choose from the rest with J. Store the weights λ, μ, ρ in P<sub>t</sub> as the owner’s stated preferences, so they are data and can change. If you want the objectives kept separate, show the Pareto set to the human and let the human choose. That is a workflow step, not a formula.</div>
+<div class="it" id="R68"><b>R68</b><span class="tag w">Weakness</span>Q, C, L, and R in the router are estimates. By §3 they are claims with a source and a confidence, and they belong in K<sub>t</sub>. As written, they are treated as known functions.</div>
+<div class="rec" id="R68-rec"><b>R68 fix</b><span class="tag f">Recommendation</span>Write the router with estimates: J(m,x) = qualitŷ(m,x) − λ·cost̂(m,x) − μ·latencŷ(m,x) − ρ·risk̂(m,x). Each estimate is a claim in K with a source (benchmark or past runs) and a confidence. After each run, record the observed quality, cost, and latency as events, and update the estimates from them. The router then learns from its own log.</div>
+<div class="it" id="R69"><b>R69</b><span class="tag w">Weakness</span>The router optimizes the owner’s trade-off, not the agent’s. The theory gives each actor its own U<sub>i</sub> but never says how an agent’s U<sub>i</sub> relates to its principal’s (see <a href="#R34">R34</a>).</div>
+<div class="rec" id="R69-rec"><b>R69 fix</b><span class="tag f">Recommendation</span>Add: “An agent’s objective is its principal’s objective restricted to the task: U<sub>agent</sub> = U<sub>principal(agent)</sub> on the task states, subject to the hard constraints in P.” This makes alignment a definition. Approval and invariants catch the gap between the definition and actual behavior.</div>
+</aside>
+<h2 id="human-authority">14. Human authority</h2>
+<p>Partition action types into freely executable, approval-gated, and
+forbidden actions:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒜</mi><mo>=</mo><msub><mi>𝒜</mi><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">e</mi></mrow></msub><mspace width="0.222em"></mspace><mover><mo>∪</mo><mo accent="true">̇</mo></mover><mspace width="0.222em"></mspace><msub><mi>𝒜</mi><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">v</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi></mrow></msub><mspace width="0.222em"></mspace><mover><mo>∪</mo><mo accent="true">̇</mo></mover><mspace width="0.222em"></mspace><msub><mi>𝒜</mi><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal A=\mathcal A_{\mathrm{free}}\ \dot\cup\ \mathcal A_{\mathrm{approval}}\ \dot\cup\ \mathcal A_{\mathrm{forbidden}}.</annotation></semantics></math></p>
+<p>For an approval-gated action, the agent prepares a proposed change
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>a</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat a</annotation></semantics></math>
+and a reviewable predicted transition:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mover><mo>→</mo><mover><mi>a</mi><mo accent="true">̂</mo></mover></mover><msub><mover><mi>S</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mspace width="2.0em"></mspace><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">z</mi><mi mathvariant="normal">e</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">S_t\xrightarrow{\hat a}\widehat S_{t+1}, \qquad \mathrm{propose}\to\mathrm{inspect}\to\mathrm{authorize}\to\mathrm{commit}.</annotation></semantics></math></p>
+<p>Approval attaches to a concrete action and state version. If that
+version changes before commit, the system should revalidate the
+proposal.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §14 · Human authority</p>
+<div class="it" id="R70"><b>R70</b><span class="tag s">Strength</span>“Approval attaches to a concrete action and state version”, plus revalidation, is the most practical rule in the document. It is optimistic concurrency applied to human approval. It prevents a human from approving one state while the agent commits into another.</div>
+<div class="it" id="R71"><b>R71</b><span class="tag w">Weakness</span>The partition is by action type. Real gating depends on arguments and state. An email to yourself is free; an email to an external address needs approval. A spend of $2 is free; a spend of $2,000 is not. Make the class a function: class(S, i, a) ∈ {free, approval, forbidden}. That is P<sub>t</sub> from §6 with 3 values instead of 2.</div>
+<div class="rec" id="R71-rec"><b>R71 fix</b><span class="tag f">Recommendation</span>Replace the partition with a function: class: 𝒮 × ℐ × 𝒜 → {free, approval, forbidden}. Define it with rules in P<sub>t</sub> that read the arguments. Example: class(S, i, send_email(to)) = free if to belongs to principal(i), else approval. The 3 names stay; they become output values, not sets of action types.</div>
+<div class="it" id="R72"><b>R72</b><span class="tag w">Weakness</span>Proposals are not in S. A pending â and its Ŝ<sub>t+1</sub> exist between propose and commit. The human can see them, they can go stale, and they can expire. So they are state. Put them in W<sub>t</sub> as a waiting_approval workflow state, or add a component.</div>
+<div class="rec" id="R72-rec"><b>R72 fix</b><span class="tag f">Recommendation</span>Add a component Prop<sub>t</sub> to S<sup>owned</sup>: a set of records p = (id, actor, principal, â, base_version, diff, external_effects, status, expires_at), with status ∈ {pending, approved, rejected, expired, stale, committed}. Events: Proposed, Approved, Rejected, Expired, Committed. The alternative is to model each proposal as a workflow run in W with these states (R25). In both cases, the GUI and the agent read the same records.</div>
+<div class="rec" id="R72-rev"><b>R72 fix · revised</b><span class="tag f">Recommendation</span>Your decision: the theory accepts both representations. Define proposals by an interface, not by a storage choice.
+<ol>
+<li><b>Abstract view.</b> Define a function view<sub>prop</sub>: 𝒮<sup>owned</sup> → set of proposal records p = (id, actor, principal, â, base_version, diff, external_effects, status, expires_at). The theory uses only this view.</li>
+<li><b>Fixed status machine.</b> status ∈ {pending, approved, rejected, expired, stale, committed}. Allowed moves: pending → approved | rejected | expired | stale; approved → committed | stale | expired. rejected, expired, stale, and committed are final.</li>
+<li><b>Axioms that every representation must satisfy.</b>
+(A1) Each proposal binds actor, principal, â, and base_version, and these fields never change.
+(A2) Status changes only through the moves in item 2.
+(A3) A commit of â is allowed only from approved, and only when the current version equals base_version.
+(A4) Human and agent read the same records (observation parity, R52).
+(A5) Every proposal has a finite expires_at.</li>
+<li><b>Representation E1:</b> a separate component Prop<sub>t</sub> in S<sup>owned</sup>; view<sub>prop</sub> reads it directly.</li>
+<li><b>Representation E2:</b> each proposal is a run in W<sub>t</sub> of a fixed WorkflowDef “Proposal” (R12), with Q = the 6 status values; view<sub>prop</sub> selects those runs.</li>
+<li><b>Consequence.</b> P3 (R90) uses only A1–A3, so it holds for E1 and E2. Both representations use the same events (Proposed, Approved, Rejected, Expired, Stale, Committed). So the event log does not depend on the representation. By P1, you can move from E1 to E2 or back by replaying the same log with a different reducer.</li>
+</ol></div>
+<div class="it" id="R73"><b>R73</b><span class="tag w">Weakness</span>Ŝ<sub>t+1</sub> is a prediction. Under the stochastic T of §9, the committed outcome can differ, especially for external effects. The human approves the prediction, not the result. Show the owned-state diff exactly, and list the declared external side effects separately as “will attempt”.</div>
+<div class="rec" id="R73-rec"><b>R73 fix</b><span class="tag f">Recommendation</span>Split the preview in the proposal record into 2 parts. diff: the exact owned-state change, computed by applying the action to a copy of S<sup>owned</sup>. external_effects: the declared external calls, marked “will attempt”. After the commit, record the actual external results next to the declared effects. A mismatch is an event that the human can see.</div>
+<div class="it" id="R74"><b>R74</b><span class="tag w">Weakness</span>The value of an approval depends on the human’s observation O<sub>H</sub> and attention. If a human approves 50 proposals a day without reading them, the gate adds no safety. The model has U<sub>human effort</sub> (§13) but no link from effort to approval accuracy.</div>
+<div class="rec" id="R74-rec"><b>R74 fix</b><span class="tag f">Recommendation</span>Record 2 measurable signals per approval: time to approve, and whether the human opened the diff. Add a rule to P: if the approval count per day goes above a threshold you set, move low-risk reversible action types to free and keep approval for irreversible ones. This keeps human attention for the actions where it matters. I do not know your current approval rate, so the threshold is yours to set.</div>
+<div class="rec" id="R74-rev"><b>R74 fix · revised</b><span class="tag f">Recommendation</span>Your decision: the theory handles every approval rate α ∈ [0, ∞). Model the reviewer with 3 parameters, and derive the gate’s value from them. The symbols α, ν, ε are new; none of them is used elsewhere in the document or in the renames of R9.
+<ol>
+<li><b>Parameters.</b> α ≥ 0: approvals per unit time. ν ≥ 0: careful reviews the human can do per unit time (review time available ÷ time per careful review). ε<sub>0</sub> ∈ [0, 1]: probability that a careful review misses a bad proposal.</li>
+<li><b>Careful fraction.</b> f(α) = 1 if α ≤ ν, and f(α) = ν / α if α &gt; ν. It is the share of approvals that got a careful review.</li>
+<li><b>Worst-case assumption.</b> An approval without careful review approves any content. This gives an upper bound, not an estimate.</li>
+<li><b>Miss probability of the gate.</b> ε(α) = f(α)·ε<sub>0</sub> + (1 − f(α))·1 = 1 − f(α)(1 − ε<sub>0</sub>). For α ≤ ν, ε(α) = ε<sub>0</sub>. As α → ∞ with ν fixed, ε(α) → 1: the gate stops bad proposals with probability approaching 0.</li>
+<li><b>α = 0.</b> No gated action commits. With the deadlines from R62 and axiom A5 (revised R72), every proposal ends in expired. Liveness holds; progress on gated work is 0.</li>
+<li><b>Results that hold for every α.</b> P2 (invariants) does not depend on α, so every rule that must hold at any rate belongs in 𝒞, not in the gate. P3 (version binding) does not depend on α, because it checks versions, not attention. Only the gate’s filtering value, 1 − ε(α), depends on α.</li>
+<li><b>Measured, not assumed.</b> α is computed from the log: the count of Approved events in a window ÷ the window length. ν and ε<sub>0</sub> are claims in K with a source and a confidence (§3). So no new state component is needed.</li>
+<li><b>Optional adaptive policy.</b> class(S, i, a) (R71) may read α and ν from state, and move action types between free and approval as load changes. The theory allows this but does not require it. Recommended default: irreversible external actions (R38) stay in approval at every rate.</li>
+</ol></div>
+</aside>
+<h2 id="concurrency">15. Concurrency</h2>
+<p>Two agents may act on the same state. One solution serializes the
+actions:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>t</mi></msub><mover><mo>→</mo><msub><mi>a</mi><mi>i</mi></msub></mover><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mover><mo>→</mo><msub><mi>a</mi><mi>j</mi></msub></mover><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>2</mn></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">S_t\xrightarrow{a_i}S_{t+1}\xrightarrow{a_j}S_{t+2}.</annotation></semantics></math></p>
+<p>Another merges compatible concurrent updates:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>M</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>F</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><msub><mi>F</mi><mi>j</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><msub><mi>a</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">S_{t+1}=M(F_i(S_t,a_i),F_j(S_t,a_j)).</annotation></semantics></math></p>
+<p>Some replicated data supports a CRDT-style join
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⊔</mo><annotation encoding="application/x-tex">\sqcup</annotation></semantics></math>
+with</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>⊔</mo><mi>y</mi><mo>=</mo><mi>y</mi><mo>⊔</mo><mi>x</mi><mo>,</mo><mspace width="2.0em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>⊔</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⊔</mo><mi>z</mi><mo>=</mo><mi>x</mi><mo>⊔</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>⊔</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>x</mi><mo>⊔</mo><mi>x</mi><mo>=</mo><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">x\sqcup y=y\sqcup x, \qquad (x\sqcup y)\sqcup z=x\sqcup(y\sqcup z), \qquad x\sqcup x=x.</annotation></semantics></math></p>
+<p>These properties yield convergence for the relevant data type. They
+do not make arbitrary business operations commute: publication,
+payments, and uniqueness constraints generally require coordination or
+transactions.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §15 · Concurrency</p>
+<div class="it" id="R75"><b>R75</b><span class="tag s">Strength</span>The CRDT laws (commutative, associative, idempotent, which make a join semilattice) are stated correctly. The limit is also stated correctly: the laws do not make business operations commute.</div>
+<div class="it" id="R76"><b>R76</b><span class="tag f">Suggestion</span>That limit has a precise name: invariant confluence (I-confluence). An invariant can be kept without coordination if and only if merging any two valid states gives a valid state. Uniqueness and “balance ≥ 0 with withdrawals” fail this test. “Append a comment” passes. See Bailis et al., “Coordination Avoidance in Database Systems”, PVLDB 8(3), 2014. Apply this test to each invariant in §12.</div>
+<div class="it" id="R77"><b>R77</b><span class="tag w">Weakness</span>M is not defined. Is M defined on every pair of states, or only on compatible updates? What happens when two updates are not compatible: reject one, ask a human, or last writer wins?</div>
+<div class="rec" id="R77-rec"><b>R77 fix</b><span class="tag f">Recommendation</span>Define M as a partial function. M(S<sup>i</sup>, S<sup>j</sup>) is defined when the two updates touch disjoint parts of S, or when their data type has a join (CRDT). Otherwise the second commit is rejected with Conflict(version), and the actor re-reads and retries (optimistic concurrency). For a conflict in text written by a human and an agent, escalate to the human and do not retry automatically.</div>
+<div class="it" id="R78"><b>R78</b><span class="tag w">Weakness</span>Convergence also needs every update to reach every replica eventually. The three laws alone do not give convergence.</div>
+<div class="rec" id="R78-rec"><b>R78 fix</b><span class="tag f">Recommendation</span>Add: “Convergence assumes every update is eventually delivered to every replica.” For an application with one database, this holds at once. State that the application has one commit point, and that CRDTs are needed only for offline or multi-device copies.</div>
+<div class="it" id="R79"><b>R79</b><span class="tag w">Weakness</span>The agent-specific case is missing. Agents read state into context, work for minutes, then write. That is a long transaction with a stale read (see <a href="#R51">R51</a>).</div>
+<div class="rec" id="R79-rec"><b>R79 fix</b><span class="tag f">Recommendation</span>Apply R51 to every agent write. Each write carries the version it read (base_version). The commit checks that the data the write depends on has not changed since base_version; otherwise it returns Conflict. This is the §14 approval-version mechanism, used for all agent writes.</div>
+</aside>
+<h2 id="causality-and-provenance">16. Causality and provenance</h2>
+<p>Let a provenance DAG be</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Π</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>N</mi><mi>t</mi></msub><mo>,</mo><msubsup><mi>L</mi><mi>t</mi><mi>Π</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\Pi_t=(N_t,L_t^{\Pi}),</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>→</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">x\to y</annotation></semantics></math>
+means
+“<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+was derived using
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>.”
+For example:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">o</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">t</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">m</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">k</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">w</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">k</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">E</mi><mi mathvariant="normal">x</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathrm{Video}\to\mathrm{Transcript}\to\mathrm{Claim}\to\mathrm{Workflow}\to\mathrm{Skill}\to\mathrm{Experiment}\to\mathrm{Conclusion}.</annotation></semantics></math></p>
+<p>A conclusion
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+has an ancestry
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Anc</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>c</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{Anc}(c)</annotation></semantics></math>
+that an agent can inspect when asked, “Why do you believe this?”
+Provenance records derivation, not truth; the ancestral evidence still
+needs evaluation.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §16 · Provenance</p>
+<div class="it" id="R80"><b>R80</b><span class="tag s">Strength</span>“Provenance records derivation, not truth” is correct and often forgotten.</div>
+<div class="it" id="R81"><b>R81</b><span class="tag f">Suggestion</span>Use the W3C PROV data model (PROV-DM, W3C Recommendation, 2013). It has 3 node types: entity (a transcript, a claim), activity (an extraction run), and agent (Opus 5.5, the owner). The example chain has only entities. With activities and agents, “Why do you believe this?” can answer “Opus 5.5 extracted it from transcript 123 in run 88”, and a bad model run can be found through its activity node.</div>
+<div class="it" id="R82"><b>R82</b><span class="tag f">Suggestion</span>Use provenance for invalidation. When a source is retracted, or a model run is found to be bad, mark every descendant of that node as suspect. This is the main practical use of the DAG, and the document does not mention it.</div>
+<div class="it" id="R83"><b>R83</b><span class="tag w">Weakness</span>Acyclicity is assumed. Iterative refinement (a conclusion revises a claim that fed it) creates a cycle unless each version is a separate immutable node. State that nodes are immutable versions.</div>
+<div class="rec" id="R83-rec"><b>R83 fix</b><span class="tag f">Recommendation</span>Add to §16: “Nodes of Π are immutable versions. A revision creates a new node with an edge revises from the old version. So Π is acyclic by construction.” In storage, claim and artifact rows are append-only, and an edit inserts a new version.</div>
+</aside>
+<h2 id="the-full-formal-object">17. The full formal object</h2>
+<p>Define an agent-native application as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><menclose notation="box"><mrow><mi>𝔄</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝒮</mi><mo>,</mo><mi>ℐ</mi><mo>,</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>𝒜</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mi>T</mi><mo>,</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>O</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>U</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">}</mo><mo>,</mo><mi>𝒞</mi><mo>,</mo><mi>𝒫</mi><mo>,</mo><mi>Π</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></menclose><mi>.</mi></mrow><annotation encoding="application/x-tex">\boxed{\mathfrak A=\left(\mathcal S,\mathcal I,\{\mathcal A_i\},T,\{O_i\},\{U_i\},\mathcal C,\mathcal P,\Pi\right)}.</annotation></semantics></math></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒮</mi><annotation encoding="application/x-tex">\mathcal S</annotation></semantics></math></td>
+<td style="text-align: left;">State space</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℐ</mi><annotation encoding="application/x-tex">\mathcal I</annotation></semantics></math></td>
+<td style="text-align: left;">Actors</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒜</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal A_i</annotation></semantics></math></td>
+<td style="text-align: left;">Actor-specific actions</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math></td>
+<td style="text-align: left;">Transition kernel</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>O</mi><mi>i</mi></msub><annotation encoding="application/x-tex">O_i</annotation></semantics></math></td>
+<td style="text-align: left;">Observation model for actor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>U</mi><mi>i</mi></msub><annotation encoding="application/x-tex">U_i</annotation></semantics></math></td>
+<td style="text-align: left;">Actor objectives</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒞</mi><annotation encoding="application/x-tex">\mathcal C</annotation></semantics></math></td>
+<td style="text-align: left;">Constraints and invariants</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒫</mi><annotation encoding="application/x-tex">\mathcal P</annotation></semantics></math></td>
+<td style="text-align: left;">Authorization policy</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math></td>
+<td style="text-align: left;">Provenance relation</td>
+</tr>
+</tbody>
+</table>
+<p>The formalism combines ideas from partially observable decision
+processes, multi-agent systems, database transition systems,
+event-sourced architectures, typed knowledge graphs, and authorization
+logic. It is a <strong>design framework</strong> assembled from these
+ideas, rather than a claim that all implementations must use each
+one.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §17 · The full formal object</p>
+<div class="it" id="R84"><b>R84</b><span class="tag s">Strength</span>The closing paragraph gives the correct status: a design framework assembled from known ideas, not a claim that each idea is required.</div>
+<div class="it" id="R85"><b>R85</b><span class="tag w">Weakness</span>Fixed parts and changing parts are mixed. 𝔄 lists 𝒫, 𝒞, and Π as fixed members of the tuple. But §6 says P<sub>t</sub> changes over time and is part of S<sub>t</sub>, and §16 gives Π<sub>t</sub> a time index. §18 puts invariants inside S<sub>t</sub> as Λ<sub>t</sub> and also uses 𝒞. Each item needs one home.</div>
+<div class="rec" id="R85-rec"><b>R85 fix</b><span class="tag f">Recommendation</span>R86 gives the rule. Concrete tuple: 𝔄 = (𝒮, ℐ, {𝒜<sub>i</sub>}, T, {O<sub>i</sub>}, {r<sub>i</sub>}, S<sub>0</sub>, apply, 𝒞, meta-policy). Move P<sub>t</sub> and Π<sub>t</sub> into S<sub>t</sub>. 𝒞 stays in 𝔄 if the designer fixes the invariants. If users can add invariants at run time, move those into S<sub>t</sub> too, and say that 𝒞 in 𝔄 holds only the invariants that cannot change.</div>
+<div class="it" id="R86"><b>R86</b><span class="tag f">Suggestion</span>Rule: 𝔄 holds what does not change during operation: types, schemas, the reducer, and the meta-rules for how policies may change. S<sub>t</sub> holds everything that changes: current permissions and the current provenance graph. Then 𝒫 in 𝔄 means “the rule for changing P<sub>t</sub>”.</div>
+<div class="it" id="R87"><b>R87</b><span class="tag w">Weakness</span>𝔄 has no initial state S<sub>0</sub> and no event log, and §11 needs both.</div>
+<div class="rec" id="R87-rec"><b>R87 fix</b><span class="tag f">Recommendation</span>Add S<sub>0</sub> and the reducer apply to 𝔄 (tuple in the R85 recommendation). Define the log as a derived object: Log<sub>t</sub> = (e<sub>1</sub>, …, e<sub>t</sub>), with S<sub>t</sub><sup>owned</sup> = fold(apply, S<sub>0</sub><sup>owned</sup>, Log<sub>t</sub>).</div>
+<div class="it" id="R88"><b>R88</b><span class="tag w">Weakness</span>Nothing in 𝔄 is specific to agents. The same tuple describes a multi-user wiki with a webhook bot. The agent-specific parts are the contents of R<sub>t</sub><sup>i</sup> and the stochastic T, and 𝔄 does not constrain either.</div>
+<div class="rec" id="R88-rec"><b>R88 fix</b><span class="tag f">Recommendation</span>R89 lists the candidates. Concrete: add a section “What makes it agent-native” with the properties you accept as numbered axioms. Give each axiom one test you can run. Example: “Parity test: for each GUI action, a tool call exists that produces the same event.”</div>
+<div class="it" id="R89"><b>R89</b><span class="tag f">Suggestion</span>Candidate defining properties for “agent-native”. Keep the ones you accept:
+<ol>
+<li><b>Action parity.</b> Every action a human can take through the GUI has an agent-callable equivalent, subject to P.</li>
+<li><b>Observation parity</b> (see <a href="#R52">R52</a>).</li>
+<li><b>Self-describing action space.</b> 𝒜<sub>i</sub>(S<sub>t</sub>) and the schemas are readable by the agent as observations.</li>
+<li><b>Proposals as first-class state</b> (see <a href="#R72">R72</a>).</li>
+</ol>
+With these as axioms, the theory says something that a generic multi-user application theory does not.</div>
+<div class="it" id="R90"><b>R90</b><span class="tag w">Weakness</span>The document is called a formal theory, but it states no result that follows from its definitions. Three short propositions follow from what is already written:
+<ol>
+<li><b>P1 — Replay determinism.</b> Let the reducer be a pure function. If every event records the sampled outcome of its action (the <em>result</em> field, including external responses and model outputs), then S<sub>t</sub><sup>owned</sup> is fixed by the log alone. Proof: induction on t; each step applies a pure function to recorded inputs. It fails if the reducer reads a clock, calls an API, or samples a model during replay.</li>
+<li><b>P2 — Safety by induction.</b> If S<sub>0</sub> ∈ 𝒮<sub>valid</sub>, and every commit atomically checks admissibility and all invariants in 𝒞 on the candidate owned state and rejects on failure with state unchanged, then every reachable owned state is in 𝒮<sub>valid</sub>. Proof: induction on t. It holds for owned state only; invariants over E<sup>real</sup> cannot be enforced this way.</li>
+<li><b>P3 — Approval soundness.</b> If an approval is a record (h, â, v), and a commit of â succeeds only when the current version equals v, then every committed gated action was applied to the exact state version the human reviewed. Limit: reviewed does not mean understood (see §14 notes), and external outcomes can still differ from Ŝ<sub>t+1</sub>.</li>
+</ol>
+Each one is a guarantee you can test in code.</div>
+<div class="rec" id="R90-rec"><b>R90 fix</b><span class="tag f">Recommendation</span>Add a section “Consequences” with P1–P3 as stated above, each with its one-line proof and its failure condition. Turn each into a test. P1: replay the log into an empty database and compare with the live state. P2: a property test that runs random actions and checks all invariants after each commit. P3: a test that changes the state between approval and commit and expects a rejection.</div>
+</aside>
+<h2 id="compact-form-for-an-ai-rd-os">18. Compact form for an AI R&amp;D
+OS</h2>
+<p>A useful specialization is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msub><mi>S</mi><mi>t</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>G</mi><mi>t</mi></msub><mo>,</mo><msub><mi>B</mi><mi>t</mi></msub><mo>,</mo><msub><mi>Q</mi><mi>t</mi></msub><mo>,</mo><msub><mi>R</mi><mi>t</mi></msub><mo>,</mo><msub><mi>Λ</mi><mi>t</mi></msub><mo>,</mo><msub><mi>Π</mi><mi>t</mi></msub><mo>,</mo><msub><mi>Ξ</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></menclose><annotation encoding="application/x-tex">\boxed{S_t=(G_t,B_t,Q_t,R_t,\Lambda_t,\Pi_t,\Xi_t)}</annotation></semantics></math></p>
+<p>with the following interpretations:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Component</th>
+<th style="text-align: left;">Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>G</mi><mi>t</mi></msub><annotation encoding="application/x-tex">G_t</annotation></semantics></math></td>
+<td style="text-align: left;">Typed domain and knowledge graph</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mi>t</mi></msub><annotation encoding="application/x-tex">B_t</annotation></semantics></math></td>
+<td style="text-align: left;">Claims, beliefs, and confidence
+assessments</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>t</mi></msub><annotation encoding="application/x-tex">Q_t</annotation></semantics></math></td>
+<td style="text-align: left;">Workflow and process states</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>t</mi></msub><annotation encoding="application/x-tex">R_t</annotation></semantics></math></td>
+<td style="text-align: left;">Agent runtime states</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Λ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\Lambda_t</annotation></semantics></math></td>
+<td style="text-align: left;">Permissions and invariants</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Π</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\Pi_t</annotation></semantics></math></td>
+<td style="text-align: left;">Provenance DAG</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Ξ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\Xi_t</annotation></semantics></math></td>
+<td style="text-align: left;">External-world observations or modeled
+external state</td>
+</tr>
+</tbody>
+</table>
+<p>Then, for acting actor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>i</mi><mi>t</mi></msub><annotation encoding="application/x-tex">i_t</annotation></semantics></math>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><menclose notation="box"><mrow><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>∼</mo><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mspace width="0.167em"></mspace><mo>⋅</mo><mo>∣</mo><msub><mi>S</mi><mi>t</mi></msub><mo>,</mo><msub><mi>a</mi><mi>t</mi></msub><mo>,</mo><msub><mi>i</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></menclose><mspace width="2.0em"></mspace><mtext mathvariant="normal">subject to</mtext><mspace width="2.0em"></mspace><msub><mi>a</mi><mi>t</mi></msub><mo>∈</mo><msub><mi>𝒜</mi><msub><mi>i</mi><mi>t</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>S</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>⊨</mo><mi>𝒞</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\boxed{S_{t+1}\sim T(\,\cdot\mid S_t,a_t,i_t)} \qquad\text{subject to}\qquad a_t\in\mathcal A_{i_t}(S_t),\quad S_{t+1}\models\mathcal C.</annotation></semantics></math></p>
+<p>The conceptual shift is from a UI, business logic, and database
+toward <strong>state space, transitions, actors, observations,
+constraints, and provenance</strong>. A GUI, CLI, Codex, Claude Code,
+API, or background agent is an interface that observes and changes the
+same modeled system.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · §18 · Compact form</p>
+<div class="it" id="R91"><b>R91</b><span class="tag s">Strength</span>The last paragraph is the core claim, and it is correct: a GUI, a CLI, Claude Code, and a background agent are interfaces onto one modeled system.</div>
+<div class="it" id="R92"><b>R92</b><span class="tag w">Weakness</span>The mapping from §1’s 6 components to §18’s 7 components is not given. Proposed mapping:
+<table>
+<thead><tr><th>§1</th><th>§18</th><th>Issue</th></tr></thead>
+<tbody>
+<tr><td>X<sub>t</sub></td><td>G<sub>t</sub></td><td>G<sub>t</sub> is “domain <em>and knowledge</em> graph”, so part of K moves here</td></tr>
+<tr><td>K<sub>t</sub></td><td>B<sub>t</sub></td><td>K is now split between G<sub>t</sub> and B<sub>t</sub>; the split rule is not given</td></tr>
+<tr><td>W<sub>t</sub></td><td>Q<sub>t</sub></td><td>Q is also “quality” in §13</td></tr>
+<tr><td>R<sub>t</sub></td><td>R<sub>t</sub></td><td>unchanged</td></tr>
+<tr><td>P<sub>t</sub></td><td>Λ<sub>t</sub></td><td>Λ<sub>t</sub> also holds invariants, which §17 keeps outside the state in 𝒞</td></tr>
+<tr><td>E<sub>t</sub></td><td>Ξ<sub>t</sub></td><td>still “observations or modeled external state” (see <a href="#R5">R5</a>)</td></tr>
+<tr><td>—</td><td>Π<sub>t</sub></td><td>new component; §1 does not list it</td></tr>
+</tbody></table></div>
+<div class="rec" id="R92-rec"><b>R92 fix</b><span class="tag f">Recommendation</span>Add this mapping table to §18 and fix its 2 issues. (1) G<sub>t</sub> holds entities and typed edges; B<sub>t</sub> holds claim records with their about-edges into G<sub>t</sub> (R20). (2) Invariants live in 𝒞, not in Λ<sub>t</sub>, so Λ<sub>t</sub> means permissions only.</div>
+<div class="it" id="R93"><b>R93</b><span class="tag w">Weakness</span>S<sub>t+1</sub> ⊨ 𝒞 is written on a random variable. Write it as §12 does: the support of T(· | S<sub>t</sub>, a<sub>t</sub>, i<sub>t</sub>) is inside 𝒮<sub>valid</sub>.</div>
+<div class="rec" id="R93-rec"><b>R93 fix</b><span class="tag f">Recommendation</span>Replace “S<sub>t+1</sub> ⊨ 𝒞” with “T(𝒮<sub>valid</sub><sup>owned</sup> | S<sub>t</sub>, i<sub>t</sub>, a<sub>t</sub>) = 1”, which matches §12 and R61.</div>
+<div class="it" id="R94"><b>R94</b><span class="tag f">Suggestion</span>Model an interface formally as a pair (O, 𝒜′): an observation projection and a subset of actions. Then “a GUI and Claude Code change the same system” becomes two interfaces over the same S and T, and parity (see <a href="#R52">R52</a>) becomes a relation between the two pairs.</div>
+</aside>
+<h3 id="a-further-mathematical-direction">A further mathematical
+direction</h3>
+<p>One can study a category whose objects are valid states and whose
+morphisms are permitted transitions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mover><mo>→</mo><mi>a</mi></mover><msub><mi>S</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">S_i\xrightarrow{a}S_j</annotation></semantics></math>.
+Workflow sequencing corresponds to composition when transitions are
+composable. This is a possible formal extension, not a result
+established by the model above: stochastic actions, concurrency,
+observations, and authorization need careful treatment before claiming a
+full categorical theory.</p>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · Further direction · Category theory</p>
+<div class="it" id="R95"><b>R95</b><span class="tag s">Strength</span>The hedge is correct: this is a possible extension, not a result.</div>
+<div class="it" id="R96"><b>R96</b><span class="tag f">Suggestion</span>If the morphisms are all finite sequences of permitted transitions, the result is the free (path) category on the transition graph. It always exists, and by itself it adds no theorem. Value would come from functors, for example a map from workflow runs to provenance subgraphs that preserves composition.</div>
+<div class="it" id="R97"><b>R97</b><span class="tag f">Suggestion</span>For stochastic transitions, the standard setting is the Kleisli category of the Giry monad (Giry, 1982). Its morphisms are Markov kernels, such as T. That handles the first of the four obstacles listed in the text.</div>
+<div class="it" id="R98"><b>R98</b><span class="tag w">Weakness</span>Identity morphisms need a no-op action in every state. The rejection outcome of §12 (state unchanged) can serve as that no-op.</div>
+<div class="rec" id="R98-rec"><b>R98 fix</b><span class="tag f">Recommendation</span>Use the empty path as the identity morphism. This is standard for a path category and needs no no-op action. My original note is wrong for the path category: a no-op is needed only if single transitions are the morphisms. Even then, Rejected (R61) is not a strict identity, because it appends a log entry.</div>
+</aside>
+<aside class="rv" aria-label="Reviewer note">
+<p class="rv-h">Reviewer notes · Summary and priority fixes</p>
+<ol>
+<li>Separate S<sup>world</sup> from S<sup>owned</sup>, and say which one each section uses — <a href="#R5">R5</a>.</li>
+<li>Use one action model: interleaving, one actor and one action per step, t = event-log position — <a href="#R41">R41</a>, <a href="#R2">R2</a>.</li>
+<li>Add a notation table; remove the 12 symbol collisions and the 2 word collisions — <a href="#R8">R8</a>.</li>
+<li>Put each of 𝒫, 𝒞, Π in one home: fixed rules in 𝔄, changing content in S<sub>t</sub> — <a href="#R85">R85</a>.</li>
+<li>Add 3 missing concepts: proposals as state — <a href="#R72">R72</a>; principals — <a href="#R34">R34</a>; irreversible actions — <a href="#R38">R38</a>.</li>
+<li>State P1–P3 — <a href="#R90">R90</a>.</li>
+<li>Define agent-native through parity, a self-describing action space, and proposals — <a href="#R88">R88</a>.</li>
+<li>Add one worked example that touches every component (below).</li>
+</ol>
+<p><b>Proposed worked example: an agent publishes a summary of SourceVideo.</b></p>
+<ol>
+<li>The agent reads Ê (video metadata) and X (Workflow42) at state version v = 41, and records v = 41 in R<sub>t</sub><sup>i</sup>.</li>
+<li>The agent extracts 3 claims into K, each with a confidence and Π edges: transcript → claim, activity = extraction run, agent = Opus 5.5.</li>
+<li>The workflow run moves from summarized to waiting_approval in W.</li>
+<li>The agent proposes â = publish(summary_9), with the owned-state diff and one external effect, “post to blog”. P classifies it as approval, because the external effect is irreversible.</li>
+<li>The owner reviews at v = 41 and approves: the record (owner, â, 41).</li>
+<li>Before the commit, the owner edits summary_9, so the version becomes 42. The commit checks 41 ≠ 42, rejects, and asks for revalidation (P3).</li>
+<li>The owner approves again at v = 42. The commit writes PublishRequested, calls the blog, and writes Published(result = URL). The invariant published ⇒ human_approved holds (P2).</li>
+<li>A replay folds the log and gets the URL from the recorded result, without a second call to the blog (P1).</li>
+</ol>
+<p>Written out with the actual symbols, this example would expose any remaining gap in the definitions.</p>
+</aside>
+</body>
+</html>

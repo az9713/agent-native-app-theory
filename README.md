@@ -21,3 +21,4 @@ This is revision 2. It keeps the 18 sections of revision 1 in the same order and
 ## Files
 
 - `agent_native_state_theory_v2.html` — the document. It is a single self-contained page; the math is MathML, so it needs no scripts. It supports light and dark mode.
+- `agent_native_state_theory_reviewed.html` — the review of revision 1: its full text with 98 inline review notes (strengths, weaknesses, suggestions) and a recommendation for each weakness. The change table at the end of revision 2 links to these notes. [Read the review live](https://az9713.github.io/agent-native-app-theory/agent_native_state_theory_reviewed.html).
